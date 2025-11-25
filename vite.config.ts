@@ -10,7 +10,7 @@ export default defineConfig({
     },
   },
   server: {
-    port: https://sleekapparels.com,
+    port: 8080,
   },
   build: {
     sourcemap: 'hidden',
