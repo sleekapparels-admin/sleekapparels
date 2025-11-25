@@ -33,6 +33,7 @@ export default function ModernBuyerDashboard() {
   const [selectedFilter, setSelectedFilter] = useState<'all' | 'active' | 'pending'>('all');
   const [userId, setUserId] = useState<string | null>(null);
   const [userName, setUserName] = useState<string>('User');
+  const [customerType, setCustomerType] = useState<string>('');
 
   // Get current user
   useEffect(() => {
@@ -47,6 +48,11 @@ export default function ModernBuyerDashboard() {
         }
         
         setUserId(user.id);
+        
+        // Get customer type from user metadata
+        if (user.user_metadata?.customer_type) {
+          setCustomerType(user.user_metadata.customer_type);
+        }
         
         // Get user profile data
         const { data: profile, error: profileError } = await supabase
@@ -254,7 +260,12 @@ export default function ModernBuyerDashboard() {
               Welcome back, {userName}! 👋
             </h1>
             <p className="text-lg text-muted-foreground">
-              Here's what's happening with your orders today
+              {customerType === 'fashion_brand' && "Manage your fashion brand's production orders"}
+              {customerType === 'educational' && "Track your school uniform orders"}
+              {customerType === 'corporate' && "Monitor your corporate apparel production"}
+              {customerType === 'sports_team' && "Follow your team's sportswear production"}
+              {customerType === 'wholesaler' && "Oversee your wholesale inventory orders"}
+              {!customerType && "Here's what's happening with your orders today"}
             </p>
           </motion.div>
 
