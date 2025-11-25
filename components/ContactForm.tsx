@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, FormEvent } from 'react';
+import { supabase } from '@/lib/supabase';
 
 export default function ContactForm() {
     const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
@@ -10,26 +11,28 @@ export default function ContactForm() {
         setStatus('sending');
 
         const formData = new FormData(e.currentTarget);
-        const data = Object.fromEntries(formData);
+        const data = {
+            name: formData.get('name') as string,
+            email: formData.get('email') as string,
+            company: formData.get('company') as string || '',
+            phone: formData.get('phone') as string || '',
+            product_type: formData.get('product_type') as string,
+            quantity: formData.get('quantity') as string,
+            message: formData.get('message') as string,
+        };
 
         try {
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || '';
-            // Remove trailing slash if present to avoid double slashes
-            const baseUrl = apiUrl.replace(/\/$/, '');
-
-            const response = await fetch(`${baseUrl}/contact`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data),
+            // Call Supabase Edge Function
+            const { data: result, error } = await supabase.functions.invoke('submit-contact-form', {
+                body: data,
             });
 
-            if (response.ok) {
+            if (error) {
+                console.error('Supabase function error:', error);
+                setStatus('error');
+            } else {
                 setStatus('success');
                 (e.target as HTMLFormElement).reset();
-            } else {
-                setStatus('error');
             }
         } catch (error) {
             console.error('Error submitting form:', error);
