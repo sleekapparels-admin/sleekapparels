@@ -20,8 +20,8 @@ export default function LoopTraceForSuppliers() {
   const benefits = [
     {
       icon: Users,
-      title: "Access Global Buyers Instantly",
-      description: "Connect with fashion brands, schools, corporates, and sports teams worldwide looking for your products.",
+      title: "Receive Qualified Orders",
+      description: "Get production orders from Sleek Apparels serving brands, schools, corporates, and sports teams worldwide.",
       color: "text-green-500",
       bgColor: "bg-green-50"
     },
@@ -71,20 +71,20 @@ export default function LoopTraceForSuppliers() {
     },
     {
       step: "2",
-      title: "Get Matched with Buyers",
-      description: "AI matches incoming buyer requests with your capabilities. Receive qualified leads that fit your production strengths.",
+      title: "Receive Order Assignments",
+      description: "Sleek Apparels' AI matches production orders with your capabilities. Get orders that fit your specialization and capacity.",
       icon: Target
     },
     {
       step: "3",
-      title: "Send Smart Quotes",
-      description: "Use AI-assisted quoting to generate competitive proposals. Buyers see your profile, ratings, and past work.",
+      title: "Confirm & Produce",
+      description: "Accept production orders assigned by Sleek Apparels. Focus on manufacturing while we handle buyer relationships.",
       icon: Sparkles
     },
     {
       step: "4",
       title: "Manage & Deliver",
-      description: "Track orders, communicate with buyers, update production stages, and build long-term relationships.",
+      description: "Track production stages, communicate with Sleek Apparels team, and deliver quality products on time.",
       icon: Package
     }
   ];

@@ -126,14 +126,14 @@ const SUPPLIER_JOURNEY = [
   {
     step: 3,
     title: 'Receive Orders',
-    description: 'Get matched with buyers looking for your products',
+    description: 'Get assigned production orders through Sleek Apparels',
     icon: Users,
     color: 'from-orange-500 to-red-500',
     details: [
-      'AI-powered matching',
-      'Qualified leads',
+      'AI-powered order assignment',
+      'Capacity-matched orders',
       'Smart notifications',
-      'Order management',
+      'Order management dashboard',
     ],
   },
   {

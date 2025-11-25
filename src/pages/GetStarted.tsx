@@ -103,14 +103,14 @@ export default function GetStarted() {
               </h2>
 
               <p className="text-muted-foreground mb-6">
-                Connect with global buyers, manage orders efficiently, and grow your manufacturing business
+                Receive orders from Sleek Apparels, manage production efficiently, and grow your manufacturing business
               </p>
 
               {/* Supplier Benefits */}
               <div className="space-y-3 mb-8">
                 <div className="flex items-start gap-3">
                   <CheckCircle2 className="h-5 w-5 text-accent mt-0.5 flex-shrink-0" />
-                  <span className="text-sm text-foreground">Connect with global buyers seeking manufacturers</span>
+                  <span className="text-sm text-foreground">Receive orders from Sleek Apparels serving global buyers</span>
                 </div>
                 <div className="flex items-start gap-3">
                   <CheckCircle2 className="h-5 w-5 text-accent mt-0.5 flex-shrink-0" />

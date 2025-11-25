@@ -7,8 +7,8 @@ export const SupplierCTASection = () => {
   const benefits = [
     {
       icon: Globe,
-      title: "Global Buyers",
-      description: "Access to verified international buyers seeking quality manufacturing"
+      title: "Qualified Orders",
+      description: "Receive production orders from Sleek Apparels serving international buyers"
     },
     {
       icon: TrendingUp,
