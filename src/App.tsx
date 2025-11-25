@@ -118,6 +118,10 @@ import QuoteDetails from "./pages/QuoteDetails";
 // SEO Landing Pages
 const LowMOQManufacturer = lazy(() => import("./pages/seo/LowMOQManufacturer"));
 const PrivateLabelManufacturer = lazy(() => import("./pages/seo/PrivateLabelManufacturer"));
+const CustomTShirtManufacturer = lazy(() => import("./pages/seo/CustomTShirtManufacturer"));
+const StartupClothingManufacturer = lazy(() => import("./pages/seo/StartupClothingManufacturer"));
+const BangladeshUSAExport = lazy(() => import("./pages/seo/BangladeshUSAExport"));
+const AmazonFBASupplier = lazy(() => import("./pages/seo/AmazonFBASupplier"));
 
 // Optimized React Query configuration
 const queryClient = new QueryClient({
@@ -268,6 +272,10 @@ const router = createBrowserRouter([
         // SEO Landing Pages (High-Priority Keywords)
         { path: "/low-moq-clothing-manufacturer-bangladesh", element: <LowMOQManufacturer /> },
         { path: "/private-label-clothing-manufacturer", element: <PrivateLabelManufacturer /> },
+        { path: "/custom-tshirt-manufacturer-bangladesh", element: <CustomTShirtManufacturer /> },
+        { path: "/clothing-manufacturer-for-startups-low-moq", element: <StartupClothingManufacturer /> },
+        { path: "/bangladesh-clothing-manufacturer-usa-export", element: <BangladeshUSAExport /> },
+        { path: "/amazon-fba-apparel-supplier-bangladesh", element: <AmazonFBASupplier /> },
         
         // Product-Specific Pages
         { path: "/t-shirts-manufacturer", element: <TShirtsManufacturer /> },

@@ -1,0 +1,15 @@
+{
+  "headers": {
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/amazon-fba-apparel-supplier-bangladesh/layout,_N_T_/amazon-fba-apparel-supplier-bangladesh/page,_N_T_/amazon-fba-apparel-supplier-bangladesh/"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/amazon-fba-apparel-supplier-bangladesh/__PAGE__",
+    "/amazon-fba-apparel-supplier-bangladesh",
+    "/_index",
+    "/_head"
+  ]
+}

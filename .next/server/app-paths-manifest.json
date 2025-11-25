@@ -1,0 +1,21 @@
+{
+  "/_global-error/page": "app/_global-error/page.js",
+  "/_not-found/page": "app/_not-found/page.js",
+  "/about/page": "app/about/page.js",
+  "/amazon-fba-apparel-supplier-bangladesh/page": "app/amazon-fba-apparel-supplier-bangladesh/page.js",
+  "/bangladesh-clothing-manufacturer-usa-export/page": "app/bangladesh-clothing-manufacturer-usa-export/page.js",
+  "/blog/page": "app/blog/page.js",
+  "/certifications/page": "app/certifications/page.js",
+  "/clothing-manufacturer-for-startups-low-moq/page": "app/clothing-manufacturer-for-startups-low-moq/page.js",
+  "/contact/page": "app/contact/page.js",
+  "/custom-tshirt-manufacturer-bangladesh/page": "app/custom-tshirt-manufacturer-bangladesh/page.js",
+  "/faq/page": "app/faq/page.js",
+  "/low-moq-clothing-manufacturer-bangladesh/page": "app/low-moq-clothing-manufacturer-bangladesh/page.js",
+  "/page": "app/page.js",
+  "/portfolio/page": "app/portfolio/page.js",
+  "/private-label-clothing-manufacturer/page": "app/private-label-clothing-manufacturer/page.js",
+  "/products/hoodies/page": "app/products/hoodies/page.js",
+  "/products/page": "app/products/page.js",
+  "/products/t-shirts/page": "app/products/t-shirts/page.js",
+  "/services/page": "app/services/page.js"
+}
