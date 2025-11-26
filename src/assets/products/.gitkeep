@@ -1,0 +1,18 @@
+# Product Images Directory
+
+This directory will contain product images organized by category:
+
+- `tshirts/` - T-shirt product images
+- `hoodies/` - Hoodie and sweatshirt images
+- `polos/` - Polo shirt images
+- `activewear/` - Joggers, leggings, shorts, sports bras
+- `uniforms/` - Corporate, school, and sports team uniforms
+
+## Image Requirements
+
+- **Format**: WebP (preferred) or high-quality JPEG
+- **Dimensions**: Minimum 800x800px for product images
+- **Naming**: Use product-id format (e.g., `classic-crew-neck-tshirt.webp`)
+- **Background**: White or transparent background preferred
+
+Upload your product images to the appropriate subdirectory.

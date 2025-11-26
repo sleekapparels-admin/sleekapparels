@@ -12,7 +12,7 @@ import { AnimatedSection } from "@/components/AnimatedSection";
 import { LazyImage } from "@/components/LazyImage";
 import { Link } from "react-router-dom";
 
-import { getPhotorealisticImage } from "@/lib/portfolioImagesPhotorealistic";
+import { getProductImage } from "@/lib/productImageMapping";
 
 interface Product {
   id: string;
@@ -133,17 +133,16 @@ const Portfolio = () => {
                     delay={index * 0.1}
                     variant="fadeUp"
                   >
-                    <div
+                     <div
                       className="group bg-card border border-border rounded-2xl overflow-hidden hover:shadow-card-hover transition-all duration-300 cursor-pointer hover:-translate-y-1"
                       onClick={() => setSelectedProduct(item)}
                     >
                        <div className="aspect-[4/5] overflow-hidden bg-white relative">
                         {(() => {
-                          const imageSrc = getPhotorealisticImage(item.image_url) || 
-                                          getPhotorealisticImage(item.title) || 
-                                          getPhotorealisticImage(item.category);
+                          // Use direct ID-based image mapping
+                          const imageSrc = getProductImage(item.id, item.category);
                           
-                          return imageSrc ? (
+                          return (
                             <img
                               src={imageSrc}
                               alt={item.title}
@@ -161,14 +160,6 @@ const Portfolio = () => {
                                 }
                               }}
                             />
-                          ) : (
-                            <div className="w-full h-full flex items-center justify-center text-muted-foreground">
-                              <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                                <circle cx="8.5" cy="8.5" r="1.5"></circle>
-                                <polyline points="21 15 16 10 5 21"></polyline>
-                              </svg>
-                            </div>
                           );
                         })()}
                       </div>
@@ -200,11 +191,10 @@ const Portfolio = () => {
               <div className="grid md:grid-cols-2 gap-0">
                 <div className="relative aspect-square bg-white">
                   {(() => {
-                    const imageSrc = getPhotorealisticImage(selectedProduct.image_url) || 
-                                    getPhotorealisticImage(selectedProduct.title) || 
-                                    getPhotorealisticImage(selectedProduct.category);
+                    // Use direct ID-based image mapping
+                    const imageSrc = getProductImage(selectedProduct.id, selectedProduct.category);
                     
-                    return imageSrc ? (
+                    return (
                       <img
                         src={imageSrc}
                         alt={selectedProduct.title}
@@ -221,14 +211,6 @@ const Portfolio = () => {
                           }
                         }}
                       />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center text-muted-foreground">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                          <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                          <circle cx="8.5" cy="8.5" r="1.5"></circle>
-                          <polyline points="21 15 16 10 5 21"></polyline>
-                        </svg>
-                      </div>
                     );
                   })()}
                 </div>
