@@ -20,7 +20,7 @@ import { Badge } from '@/components/ui/badge';
 import { useMarketplaceProducts } from '@/hooks/useMarketplace';
 import { staggerContainer, staggerItem, hoverLift, fadeIn } from '@/lib/animations';
 import type { MarketplaceProduct } from '@/types/marketplace';
-import { getRandomImages } from '@/lib/aiGeneratedProductImages';
+import { getShowcaseImages } from '@/lib/productImageMapping';
 import OptimizedImage from '@/components/OptimizedImage';
 
 const PRODUCT_CATEGORIES = [
@@ -240,7 +240,7 @@ export function FeaturedMarketplace() {
               <p className="text-sm text-muted-foreground">Check out our product showcase below</p>
             </div>
 
-            {/* Fallback: Show AI-generated product showcase */}
+            {/* Fallback: Show local product showcase */}
             <motion.div
               variants={staggerContainer}
               initial="initial"
@@ -248,26 +248,16 @@ export function FeaturedMarketplace() {
               viewport={{ once: true }}
               className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
             >
-              {getRandomImages(8).map((img) => (
-                <motion.div key={img.id} variants={staggerItem} whileHover={hoverLift}>
+              {getShowcaseImages(8).map((img, index) => (
+                <motion.div key={index} variants={staggerItem} whileHover={hoverLift}>
                   <Card className="overflow-hidden cursor-pointer h-full group" onClick={() => navigate('/marketplace')}>
                     <div className="aspect-square relative bg-white overflow-hidden">
-                      <img
+                      <OptimizedImage
                         src={img.url}
                         alt={img.alt}
-                        loading="lazy"
+                        width={400}
+                        height={400}
                         className="w-full h-full object-contain p-4 group-hover:scale-110 transition-transform duration-500"
-                        onError={(e) => {
-                          const target = e.target as HTMLImageElement;
-                          target.style.display = 'none';
-                          const parent = target.parentElement;
-                          if (parent) {
-                            const fallback = document.createElement('div');
-                            fallback.className = 'w-full h-full flex items-center justify-center';
-                            fallback.innerHTML = '<div class="h-12 w-12 text-muted-foreground"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" /></svg></div>';
-                            parent.appendChild(fallback);
-                          }
-                        }}
                       />
                       <Badge className="absolute top-2 left-2 bg-primary z-10">
                         <Sparkles className="h-3 w-3 mr-1" />
@@ -279,9 +269,6 @@ export function FeaturedMarketplace() {
                       <h3 className="font-semibold line-clamp-2 group-hover:text-primary transition-colors">
                         {img.alt}
                       </h3>
-                      <p className="text-sm text-muted-foreground mt-2">
-                        {img.color} • {img.style}
-                      </p>
                     </CardContent>
                   </Card>
                 </motion.div>

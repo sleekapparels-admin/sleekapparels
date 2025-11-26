@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useMemo } from "react";
+import { getProductImage } from "@/lib/productImageMapping";
 
 export interface Product {
   id: string;
@@ -121,13 +122,13 @@ export const useProducts = (filters?: ProductFilters) => {
     
     if (error) throw error;
 
-    // Add fallback for missing images
-    const productsWithFallback = (data || []).map(product => ({
+    // Map products with correct local images using direct ID mapping
+    const productsWithImages = (data || []).map(product => ({
       ...product,
-      image_url: product.image_url || '/placeholder.svg'
+      image_url: getProductImage(product.id, product.category)
     }));
 
-    return productsWithFallback as Product[];
+    return productsWithImages as Product[];
   }, [
     filters?.category, 
     filters?.search, 

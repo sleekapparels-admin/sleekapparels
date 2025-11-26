@@ -1,14 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
-import { allProductImages } from "@/lib/aiGeneratedProductImages";
+import { getPortfolioGalleryImages } from "@/lib/productImageMapping";
 
 export const PortfolioGallery = () => {
-  // Use first 12 AI-generated product images for gallery
-  const portfolioImages = allProductImages.slice(0, 12).map(img => ({
-    url: img.url,
-    alt: img.alt
-  }));
+  // Use local portfolio images (placeholders until real product images uploaded)
+  const portfolioImages = getPortfolioGalleryImages();
 
   return (
     <section className="py-section-mobile md:py-section bg-background">
