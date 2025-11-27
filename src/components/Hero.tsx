@@ -17,9 +17,15 @@ export const Hero = () => {
     <section className="relative min-h-screen flex items-center overflow-hidden bg-black">
       {/* Background Video */}
       <div className="absolute inset-0 z-0">
-        <video autoPlay loop muted playsInline preload="auto" className="w-full h-full object-cover"
-      // @ts-ignore - fetchpriority is valid but not in TypeScript types yet
-      fetchpriority="high">
+        <video 
+          autoPlay 
+          loop 
+          muted 
+          playsInline 
+          preload="auto" 
+          className="w-full h-full object-cover"
+          {...({ fetchpriority: 'high' } as React.VideoHTMLAttributes<HTMLVideoElement>)}
+        >
           <source src="/videos/homepage-hero.webm" type="video/webm" />
           <source src="/videos/homepage-hero.mp4" type="video/mp4" />
           {/* Fallback for browsers that don't support video */}

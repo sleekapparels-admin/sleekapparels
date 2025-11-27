@@ -1,5 +1,23 @@
 import { useEffect } from 'react';
 
+// Extend Window interface for gtag
+declare global {
+  interface Window {
+    gtag?: (
+      command: string,
+      eventName: string,
+      params: Record<string, unknown>
+    ) => void;
+  }
+}
+
+interface WebVitalMetric {
+  name: string;
+  value: number;
+  delta: number;
+  id: string;
+}
+
 /**
  * Core Web Vitals Monitoring Hook
  * Tracks LCP, FID/INP, CLS metrics and reports to analytics
@@ -10,10 +28,8 @@ export const useCoreWebVitals = () => {
     if (import.meta.env.DEV) return;
 
     // LCP - Largest Contentful Paint
-    const reportLCP = (metric: any) => {
-      // @ts-ignore
+    const reportLCP = (metric: WebVitalMetric) => {
       if (window.gtag) {
-        // @ts-ignore
         window.gtag('event', 'web_vitals', {
           event_category: 'Web Vitals',
           event_label: 'LCP',
@@ -25,10 +41,8 @@ export const useCoreWebVitals = () => {
     };
 
     // FID/INP - First Input Delay / Interaction to Next Paint
-    const reportINP = (metric: any) => {
-      // @ts-ignore
+    const reportINP = (metric: WebVitalMetric) => {
       if (window.gtag) {
-        // @ts-ignore
         window.gtag('event', 'web_vitals', {
           event_category: 'Web Vitals',
           event_label: 'INP',
@@ -40,10 +54,8 @@ export const useCoreWebVitals = () => {
     };
 
     // CLS - Cumulative Layout Shift
-    const reportCLS = (metric: any) => {
-      // @ts-ignore
+    const reportCLS = (metric: WebVitalMetric) => {
       if (window.gtag) {
-        // @ts-ignore
         window.gtag('event', 'web_vitals', {
           event_category: 'Web Vitals',
           event_label: 'CLS',

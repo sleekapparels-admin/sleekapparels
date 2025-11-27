@@ -141,7 +141,7 @@ async function executeActions(client: any, actions: any): Promise<any[]> {
           results.push({ action: 'send_email', success: true });
           break;
 
-        case 'update_status':
+        case 'update_status': {
           const { error } = await client
             .from(action.params.table)
             .update({ status: action.params.new_status })
@@ -149,6 +149,7 @@ async function executeActions(client: any, actions: any): Promise<any[]> {
           
           results.push({ action: 'update_status', success: !error, error });
           break;
+        }
 
         case 'assign_supplier':
           // Call AI supplier assignment

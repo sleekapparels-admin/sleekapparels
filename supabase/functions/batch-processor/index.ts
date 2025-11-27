@@ -14,6 +14,8 @@ interface BatchProcessorRequest {
   data?: OrchestrationData | OrderProcessingData;
 }
 
+// OrchestrationData intentionally empty - orchestration uses no params
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 interface OrchestrationData {
   // Empty - orchestration uses no params
 }
