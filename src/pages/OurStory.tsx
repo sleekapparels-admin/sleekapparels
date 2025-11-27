@@ -58,22 +58,40 @@ const OurStory = () => {
               <div>
                 <h2 className="text-3xl font-bold mb-2 text-foreground text-center">Kh Raj Rahman</h2>
                 <p className="text-xl text-primary mb-6 text-center">Founder & Managing Director</p>
-                <p className="text-sm text-muted-foreground flex items-center gap-2 flex-wrap mb-6">
+                <p className="text-sm text-muted-foreground flex items-center gap-2 flex-wrap justify-center mb-6">
                   <Award className="h-4 w-4" />
                   Nankai University, Tianjin • International Trade & RMG Specialist • 5+ Years in Apparel Manufacturing
                 </p>
                 <div className="space-y-4 text-muted-foreground leading-relaxed">
-                  <p>
-                    I started Sleek Apparels after seeing too many small brands hit the same wall: 500-1,000 piece MOQs that killed their ability to test designs or manage cash flow. The RMG industry in Bangladesh is built for volume players—big retailers placing orders in the tens of thousands. But there's a massive gap for emerging brands who need quality production without betting their entire budget on one style.
+                  <p className="text-lg font-semibold text-foreground">
+                    "I founded Sleek Apparels to solve a fundamental injustice in Bangladesh's garment industry."
                   </p>
                   <p>
-                    My background in international trade gave me exposure to global supply chains and quality standards. I saw how proper tech pack development, fabric inspection protocols, and construction specifications could elevate production quality—but these were only accessible to brands placing massive orders. We built Sleek Apparels to bring that same rigor to low-MOQ production runs.
+                    Countless small RMG suppliers in Bangladesh possess world-class manufacturing capabilities—delivering the same quality as major factory groups—yet remain systematically excluded from global markets due to banking credit barriers, L/C requirements, and minimum order inflexibility.
                   </p>
                   <p>
-                    I personally review every inquiry that comes in. Not because we're small, but because fit matters. Some buyers want FOB pricing and minimal touchpoints. Others need help with grading, sampling iterations, or WRAP compliance documentation. I'd rather turn down work that doesn't match our capabilities than deliver something mediocre. Every tech pack, every pre-production sample, every shipment—it has my name on it.
+                    These manufacturers are trapped in a devastating cycle: relegated to low-margin local markets or accepting rock-bottom subcontract pricing from large export houses serving fast-fashion giants like H&M, Inditex, and Marks & Spencer. The margins are so compressed they can barely cover operational costs, let alone invest in equipment upgrades or worker training.
                   </p>
                   <p>
-                    Our approach isn't revolutionary—it's just focused. We run 50-100 piece production runs with the same attention to construction details, stitch consistency, and fabric testing that factories normally reserve for 5,000-piece orders. We've built relationships with mills that'll accommodate smaller fabric minimums. And we maintain GOTS and Oeko-Tex certifications so brands don't have to compromise on sustainability or compliance just because they're starting small.
+                    Meanwhile, fashion startups, D2C brands, and quality-focused smaller buyers struggle to source from Bangladesh. These innovative brands need accessible minimums (50-250 pieces), not the 1,000+ piece requirements of volume manufacturers. They're willing to pay fair prices—significantly better than fast-fashion rates—because they compete on quality and innovation, not just cost.
+                  </p>
+                  <p className="text-lg font-semibold text-foreground">
+                    The perfect market match exists. It just needs proper connection infrastructure.
+                  </p>
+                  <p>
+                    My background at Nankai University in international trade and supply chain management revealed how technical excellence, proper communication infrastructure, and transparent operations could transform manufacturing partnerships. But these capabilities were only accessible to brands placing massive orders.
+                  </p>
+                  <p>
+                    Sleek Apparels bridges this gap. We provide small manufacturers with professional management infrastructure, technical communication capabilities, and digital market presence they need to engage international buyers directly. We eliminate exploitative middlemen while addressing legitimate buyer concerns about reliability and transparency.
+                  </p>
+                  <p>
+                    That's why we developed LoopTrace™ and integrated AI-powered tools—providing real-time production visibility and intelligent quality insights that address Bangladesh's reputation challenges while showcasing these manufacturers' true capabilities.
+                  </p>
+                  <p>
+                    I personally evaluate every partnership inquiry. Not because we're small, but because alignment matters. We're selective about both the manufacturers we work with and the buyers we serve. This ensures sustainable, fair relationships where quality and ethics aren't compromised for volume.
+                  </p>
+                  <p className="text-lg font-semibold text-foreground">
+                    We're not competing with giants serving fast fashion. We're building something fundamentally different: a manufacturing ecosystem where quality, fairness, and innovation replace exploitation, opacity, and volume-at-any-cost.
                   </p>
                 </div>
               </div>

@@ -8,13 +8,13 @@ export const FounderMessage = () => {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center">
           <p className="text-body text-primary font-semibold mb-6">
-            From Nankai University to Bangladesh's Textile Innovation
+            Empowering Fashion Innovation Through Fair Manufacturing
           </p>
           
           <blockquote className="text-h4-mobile md:text-h3 font-accent italic text-foreground leading-relaxed mb-8 relative">
             <span className="text-primary text-6xl absolute -top-4 -left-2 opacity-20">"</span>
             <span className="relative z-10">
-              I founded Sleek Apparels with a vision: bring international manufacturing standards and digital transparency to Bangladesh's textile industry. Every brand deserves a manufacturing partner they can trust.
+              Bangladesh's small RMG suppliers possess world-class production capabilities, yet face systematic exclusion from global markets due to credit barriers and minimum order requirements. Sleek Apparels bridges this gap—connecting quality-focused startups and D2C brands with exceptional manufacturers who deserve fair margins and direct market access, while bringing transparency and innovation to an industry plagued by opacity and exploitation.
             </span>
             <span className="text-primary text-6xl absolute -bottom-8 -right-2 opacity-20">"</span>
           </blockquote>
@@ -24,7 +24,7 @@ export const FounderMessage = () => {
               — Khondaker Rajiur Rahman
             </p>
             <p className="text-body-sm text-muted-foreground mb-1">
-              Managing Director
+              Founder & Managing Director
             </p>
             <p className="text-body-sm text-muted-foreground">
               BBA, Nankai University (China) | Xero Certified | IAB Digital Marketing

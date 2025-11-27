@@ -41,45 +41,114 @@ const About = () => {
       {/* Founder Section */}
       <section className="py-20 px-4">
         <div className="max-w-7xl mx-auto">
-          <div className="grid md:grid-cols-1 gap-12 items-start">
-            {/* Founder Story - Full Width */}
-            <div className="space-y-6 max-w-5xl mx-auto">
+          <div className="grid md:grid-cols-5 gap-12 items-start">
+            {/* Founder Photo */}
+            <div className="md:col-span-2">
+              <div className="sticky top-24">
+                <div className="aspect-square rounded-lg overflow-hidden shadow-2xl">
+                  <img 
+                    src={founderPhoto}
+                    alt="Khondaker Rajiur Rahman - Founder & Managing Director of Sleek Apparels"
+                    className="w-full h-full object-cover"
+                    loading="lazy"
+                  />
+                </div>
+                <div className="mt-6 p-6 bg-gradient-to-br from-primary/5 to-accent/5 rounded-lg">
+                  <h3 className="text-xl font-bold mb-2">Kh Raj Rahman</h3>
+                  <p className="text-primary font-semibold mb-3">Founder & Managing Director</p>
+                  <p className="text-sm text-muted-foreground flex items-center gap-2 flex-wrap mb-4">
+                    <Award className="h-4 w-4" />
+                    BBA, Nankai University (China)
+                  </p>
+                  <div className="flex gap-3">
+                    <a 
+                      href="https://www.linkedin.com/in/khondaker-rajiur-rahman" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="p-2 rounded-full bg-primary/10 hover:bg-primary/20 transition"
+                    >
+                      <Linkedin className="h-5 w-5 text-primary" />
+                    </a>
+                    <a 
+                      href="mailto:inquiry@sleekapparels.com"
+                      className="p-2 rounded-full bg-primary/10 hover:bg-primary/20 transition"
+                    >
+                      <Mail className="h-5 w-5 text-primary" />
+                    </a>
+                    <a 
+                      href="https://wa.me/8801711071684"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="p-2 rounded-full bg-primary/10 hover:bg-primary/20 transition"
+                    >
+                      <MessageCircle className="h-5 w-5 text-primary" />
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Founder Story */}
+            <div className="md:col-span-3 space-y-6">
               <div>
-                <h2 className="text-3xl font-bold mb-2">Kh Raj Rahman</h2>
-                <p className="text-xl text-primary mb-3">Founder & Managing Director</p>
-                <p className="text-sm text-muted-foreground flex items-center gap-2 flex-wrap">
-                  <Award className="h-4 w-4" />
-                  Nankai University • 5+ Years Manufacturing Leadership • International Trade Specialist
-                </p>
+                <h2 className="text-3xl font-bold mb-6">The Problem I Set Out to Solve</h2>
               </div>
 
               <div className="space-y-4 text-muted-foreground leading-relaxed">
-                <p>
-                  Sleek Apparels was born from a fundamental gap I observed in the apparel manufacturing industry. The market had split into two extremes: massive fast-fashion manufacturers handling volume orders with compressed margins, and a vast underserved segment of quality-conscious brands unable to access premium production due to inflexible minimum order requirements.
+                <p className="text-lg">
+                  <strong className="text-foreground">Bangladesh's garment industry has a systemic problem:</strong> Small, highly capable RMG suppliers are systematically locked out of global markets despite possessing world-class production capabilities. These manufacturers can deliver the same quality as major factory groups, yet face insurmountable barriers due to banking credit policies, L/C requirements, and back-to-back limitations.
                 </p>
 
                 <p>
-                  This opportunity crystallized during my graduate studies at Nankai University in Tianjin, one of China&apos;s leading institutions for international commerce and supply chain management. Embedded within China&apos;s vertically integrated textile ecosystem, I cultivated expertise in garment engineering, production planning, and quality systems while establishing strategic vendor partnerships with Tier 1 OEM facilities and specialized fabric converters—supply chain access typically unavailable through traditional sourcing channels.
+                  The result? These exceptional manufacturers are forced into two equally devastating scenarios: catering exclusively to low-margin local markets, or accepting subcontract work from large export houses at rock-bottom prices that barely cover operational expenses—forget equipment upgrades or worker training programs.
                 </p>
 
                 <p>
-                  The concept was straightforward yet untested: leverage China's material sourcing excellence and technical sophistication while executing production in Bangladesh's cost-efficient manufacturing environment. This hybrid model would enable us to serve the premium-quality segment at accessible minimums—typically 50-100 pieces versus the industry standard of 500-1000.
+                  Meanwhile, global fast-fashion giants like H&M, Inditex, Marks & Spencer, and Bestseller maintain their competitive edge through Bangladesh's major factory groups, who in turn exploit smaller subcontractors to maintain their margins. This exploitation creates a vicious cycle: small manufacturers operate on razor-thin margins, can't invest in modernization, and remain perpetually dependent on subcontract work.
+                </p>
+
+                <p className="text-lg font-semibold text-foreground">
+                  Sleek Apparels was founded to dismantle this broken system.
                 </p>
 
                 <p>
-                  What distinguishes Sleek Apparels is not just reduced minimums, but our fundamental operating philosophy. We've eliminated the conventional sales team structure. Instead, I personally evaluate and engage with each potential partnership, ensuring alignment between client expectations and our production capabilities before commitment.
+                  <strong className="text-foreground">Our mission is twofold:</strong> First, connect quality-focused fashion startups, D2C brands, and smaller buyers directly with these exceptional small manufacturers—eliminating the exploitative middlemen. Second, address the very real challenges that prevent these connections: language barriers, limited digital presence, inadequate management infrastructure, and licensing complexities that make direct export difficult for smaller operations.
                 </p>
 
                 <p>
-                  This selective approach creates a foundation of transparency and accountability. Our clients work directly with decision-makers who understand both the technical requirements and strategic implications of their projects. There are no intermediaries diluting communication or obscuring production realities.
+                  These small manufacturers lack the resources for professional management teams, sophisticated English communication, or robust online presence needed to engage international buyers. That's where Sleek Apparels becomes the bridge—providing the commercial infrastructure, technical communication, and market access these manufacturers deserve.
+                </p>
+
+                <p className="text-lg">
+                  <strong className="text-foreground">Why does this matter for buyers?</strong> Fashion startups and emerging D2C brands face their own challenge: they need quality manufacturing at accessible minimums (50-250 pieces), not the 1,000-5,000 piece minimums demanded by volume manufacturers. They're willing to pay fair prices—significantly better than fast-fashion rates—because they compete on quality, innovation, and unique design rather than just price.
                 </p>
 
                 <p>
-                  The introduction of LoopTrace™ represents the logical evolution of this transparency commitment. Rather than periodic updates filtered through account managers, our clients access real-time production visibility, AI-powered quality insights, and granular tracking from raw materials through final shipment.
+                  Corporate uniforms, school apparel, and team sportswear represent additional untapped opportunities. These segments offer reliable, repeating orders at good margins, but require minimum order flexibility that traditional Bangladeshi manufacturers won't accommodate due to cultural production line setups optimized for volume.
+                </p>
+
+                <p className="text-lg font-semibold text-foreground">
+                  The perfect market match exists—it just needs proper connection infrastructure.
                 </p>
 
                 <p>
-                  We've deliberately positioned ourselves between conventional manufacturing and full-service development partnerships. For brands seeking a responsive production partner who can execute sophisticated designs at reasonable minimums without sacrificing quality or standards—Sleek Apparels offers a proven alternative to the traditional volume-or-nothing paradigm.
+                  <strong className="text-foreground">But there's another critical problem:</strong> Bangladesh's garment industry carries a notorious reputation among international buyers for poor lead time adherence, inflexibility during production changes, and lack of transparency. This rigidity stems from technical inadequacy and communication gaps within traditional small manufacturers.
+                </p>
+
+                <p>
+                  That's why I developed <strong className="text-foreground">LoopTrace™</strong> and integrated AI-powered tools into our platform. These technologies provide real-time production visibility, intelligent quality insights, and transparent communication that addresses legitimate buyer concerns while helping smaller manufacturers demonstrate their capabilities professionally.
+                </p>
+
+                <p>
+                  Small fashion brands and startups in Western markets compete against major fashion corporations with significantly limited resources. They differentiate through innovation, superior materials, and unique design perspectives. They need manufacturing partners who genuinely understand their constraints, can adapt to their creative vision, and share their commitment to quality over volume.
+                </p>
+
+                <p className="text-lg">
+                  <strong className="text-foreground">Sleek Apparels exists to serve both sides of this equation:</strong> empowering Bangladesh's exceptional small manufacturers with market access and fair pricing, while giving innovative brands reliable production partnerships that understand their business model and constraints.
+                </p>
+
+                <p className="text-muted-foreground italic">
+                  We're not trying to compete with the giants serving fast fashion. We're building something fundamentally different: a manufacturing ecosystem where quality, fairness, and innovation replace exploitation, opacity, and volume-at-any-cost mentality.
                 </p>
               </div>
             </div>
