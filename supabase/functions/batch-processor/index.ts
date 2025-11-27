@@ -24,8 +24,16 @@ interface OrderProcessingData {
   productCategory: string;
   productVariantBase: string;
   quantity: number;
-  styleDetails: any;
+  styleDetails: Record<string, unknown>;
   buyerId: string;
+}
+
+interface BatchResult {
+  batchId: string;
+  action: string;
+  fillPercentage: number;
+  message?: string;
+  ordersCancelled?: number;
 }
 
 const handler = async (req: Request): Promise<Response> => {
@@ -57,7 +65,7 @@ const handler = async (req: Request): Promise<Response> => {
   }
 };
 
-async function handleOrchestration(req: Request): Promise<Response> {
+async function handleOrchestration(_req: Request): Promise<Response> {
   const supabase = createClient(
     Deno.env.get('SUPABASE_URL') ?? '',
     Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
@@ -74,7 +82,7 @@ async function handleOrchestration(req: Request): Promise<Response> {
 
   if (batchError) throw batchError;
 
-  const results = [];
+  const results: BatchResult[] = [];
 
   for (const batch of batches || []) {
     const fillPercentage = (batch.current_quantity / batch.target_quantity) * 100;
@@ -137,7 +145,7 @@ async function handleOrchestration(req: Request): Promise<Response> {
 
         if (!updateError) {
           // Update all orders in this batch to cancelled
-          const orderIds = batch.batch_contributions.map((c: any) => c.order_id);
+          const orderIds = batch.batch_contributions.map((c: { order_id: string }) => c.order_id);
           await supabase
             .from('orders')
             .update({ workflow_status: 'cancelled' })
@@ -202,7 +210,7 @@ async function handleOrderProcessing(req: Request, orderRequest: OrderProcessing
 
   if (batchError) throw batchError;
 
-  let selectedBatch = null;
+  let selectedBatch: any = null;
   let isNewBatch = false;
 
   // Check style compatibility with existing batches
@@ -269,7 +277,7 @@ async function handleOrderProcessing(req: Request, orderRequest: OrderProcessing
   // Step 3: Calculate pricing
   const { data: pricingData } = await supabase.functions.invoke('pricing-calculator', {
     body: {
-      batchId: selectedBatch.id,
+      batchId: selectedBatch?.id || '',
       quantity: orderRequest.quantity,
       styleDetails: orderRequest.styleDetails,
     },
@@ -300,7 +308,7 @@ async function handleOrderProcessing(req: Request, orderRequest: OrderProcessing
   const { error: contributionError } = await supabase
     .from('batch_contributions')
     .insert({
-      batch_id: selectedBatch.id,
+      batch_id: selectedBatch?.id || '',
       order_id: order.id,
       quantity_contributed: orderRequest.quantity,
       style_details: orderRequest.styleDetails,
@@ -310,24 +318,26 @@ async function handleOrderProcessing(req: Request, orderRequest: OrderProcessing
   if (contributionError) throw contributionError;
 
   // Step 6: Update batch quantities
-  const currentStyles = await supabase
-    .from('batch_contributions')
-    .select('style_details')
-    .eq('batch_id', selectedBatch.id);
+  if (selectedBatch) {
+    const currentStyles = await supabase
+      .from('batch_contributions')
+      .select('style_details')
+      .eq('batch_id', selectedBatch.id);
 
-  const uniqueStyles = new Set(currentStyles.data?.map(c => c.style_details.variant) || []);
+    const uniqueStyles = new Set(currentStyles.data?.map(c => c.style_details.variant) || []);
 
-  await supabase
-    .from('production_batches')
-    .update({
-      current_quantity: selectedBatch.current_quantity + orderRequest.quantity,
-      current_style_count: uniqueStyles.size,
-    })
-    .eq('id', selectedBatch.id);
+    await supabase
+      .from('production_batches')
+      .update({
+        current_quantity: selectedBatch.current_quantity + orderRequest.quantity,
+        current_style_count: uniqueStyles.size,
+      })
+      .eq('id', selectedBatch.id);
+  }
 
   console.log('Order processed successfully:', {
     orderId: order.id,
-    batchId: selectedBatch.id,
+    batchId: selectedBatch?.id || '',
     isNewBatch,
   });
 
@@ -335,10 +345,12 @@ async function handleOrderProcessing(req: Request, orderRequest: OrderProcessing
     JSON.stringify({
       success: true,
       orderId: order.id,
-      batchId: selectedBatch.id,
+      batchId: selectedBatch?.id || '',
       isNewBatch,
       pricing: pricingData.pricing,
-      batchFillPercentage: ((selectedBatch.current_quantity + orderRequest.quantity) / selectedBatch.target_quantity) * 100,
+      batchFillPercentage: selectedBatch 
+        ? ((selectedBatch.current_quantity + orderRequest.quantity) / selectedBatch.target_quantity) * 100
+        : 0,
     }),
     { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
   );

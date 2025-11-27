@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "target": "ES2021",
+    "lib": ["ES2021", "DOM"],
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "strict": false,
+    "skipLibCheck": true,
+    "noEmit": true,
+    "allowJs": true,
+    "types": ["@types/node"],
+    "paths": {
+      "https://deno.land/*": ["./deno.d.ts"],
+      "https://esm.sh/*": ["../node_modules/@supabase/supabase-js/dist/module/index.d.ts"]
+    }
+  },
+  "include": ["**/*.ts"],
+  "exclude": ["node_modules"]
+}
