@@ -78,7 +78,7 @@ This guide provides AI coding agents with comprehensive project context for effe
 
 ## Project Structure
 
-```
+```text
 sleek-apparels/
 ├── src/
 │   ├── components/          # React components
@@ -122,6 +122,7 @@ sleek-apparels/
 ### Key Tables
 
 #### `profiles`
+
 User profile data (linked to `auth.users` via `id`)
 
 ```typescript
@@ -143,6 +144,7 @@ User profile data (linked to `auth.users` via `id`)
 **RLS**: Users can only view/update their own profile; admins see all.
 
 #### `orders`
+
 Production orders from buyers
 
 ```typescript
@@ -169,6 +171,7 @@ Production orders from buyers
 **RLS**: Buyers see only their orders; suppliers see assigned orders; admins see all.
 
 #### `ai_quotes`
+
 AI-generated instant quotes
 
 ```typescript
@@ -192,6 +195,7 @@ AI-generated instant quotes
 **RLS**: 5-minute session window + IP binding for anonymous quotes.
 
 #### `suppliers`
+
 Registered manufacturing suppliers
 
 ```typescript
@@ -215,6 +219,7 @@ Registered manufacturing suppliers
 **RLS**: Public view (restricted fields); full access for admins.
 
 #### `production_stages`
+
 Granular production tracking
 
 ```typescript
@@ -245,9 +250,11 @@ All edge functions are deployed at:
 ### Public Functions (No Auth Required)
 
 #### `ai-market-research`
+
 **Purpose**: Real-time market research via Perplexity AI  
 **Method**: POST  
 **Request**:
+
 ```json
 {
   "productType": "t-shirts",
@@ -255,7 +262,9 @@ All edge functions are deployed at:
   "specifications": "100% cotton, custom print"
 }
 ```
+
 **Response**:
+
 ```json
 {
   "research": {
@@ -266,19 +275,24 @@ All edge functions are deployed at:
   }
 }
 ```
+
 **Rate Limit**: 10 requests/hour per IP
 
 #### `ai-conversational-quote`
+
 **Purpose**: Generate AI-powered instant quotes  
 **Method**: POST  
 **Request**:
+
 ```json
 {
   "message": "I need 1000 custom hoodies with logo embroidery",
   "conversationHistory": []
 }
 ```
+
 **Response**:
+
 ```json
 {
   "reply": "Based on market research...",
@@ -290,12 +304,15 @@ All edge functions are deployed at:
   }
 }
 ```
+
 **Rate Limit**: 5 requests/hour per IP, 10/day per email
 
 #### `send-otp`
+
 **Purpose**: Send email OTP for registration  
 **Method**: POST  
 **Request**:
+
 ```json
 {
   "email": "user@example.com",
@@ -303,7 +320,9 @@ All edge functions are deployed at:
   "recaptchaToken": "google-recaptcha-token"
 }
 ```
+
 **Response**:
+
 ```json
 {
   "success": true,
@@ -314,17 +333,21 @@ All edge functions are deployed at:
 ### Authenticated Functions (JWT Required)
 
 #### `create-payment-intent`
+
 **Purpose**: Create Stripe payment intent for orders  
 **Method**: POST  
 **Headers**: `Authorization: Bearer {JWT}`  
 **Request**:
+
 ```json
 {
   "quoteId": "uuid-quote-id",
   "amount": 5000
 }
 ```
+
 **Response**:
+
 ```json
 {
   "clientSecret": "pi_xxx_secret_xxx",
@@ -333,15 +356,19 @@ All edge functions are deployed at:
 ```
 
 #### `generate-invoice`
+
 **Purpose**: Auto-generate invoice PDF when order completes  
 **Method**: POST (triggered automatically)  
 **Request**:
+
 ```json
 {
   "orderId": "uuid-order-id"
 }
 ```
+
 **Response**:
+
 ```json
 {
   "invoiceUrl": "https://storage.supabase.co/...",
@@ -350,16 +377,20 @@ All edge functions are deployed at:
 ```
 
 #### `ai-supplier-assignment`
+
 **Purpose**: Smart supplier matching using AI  
 **Method**: POST  
 **Headers**: `Authorization: Bearer {JWT}`  
 **Request**:
+
 ```json
 {
   "orderId": "uuid-order-id"
 }
 ```
+
 **Response**:
+
 ```json
 {
   "recommendations": [
@@ -492,16 +523,19 @@ console.log('Research results:', data);
 ### 1. **Use Semantic Color Tokens**
 
 ❌ **Bad**:
+
 ```tsx
 <div className="bg-white text-black">
 ```
 
 ✅ **Good**:
+
 ```tsx
 <div className="bg-background text-foreground">
 ```
 
 All colors defined in `src/index.css` using HSL values:
+
 - `--background` - Main background color
 - `--foreground` - Main text color
 - `--primary` - Brand accent color
@@ -512,11 +546,13 @@ All colors defined in `src/index.css` using HSL values:
 ### 2. **Always Use TypeScript Types from Supabase**
 
 ❌ **Bad**:
+
 ```tsx
 const orders: any[] = data;
 ```
 
 ✅ **Good**:
+
 ```tsx
 import { Database } from "@/integrations/supabase/types";
 
@@ -641,11 +677,13 @@ Example: `npm install recharts` for charts
 #### 1. **Never Expose Secrets**
 
 ❌ **NEVER**:
+
 ```tsx
 const API_KEY = "sk_live_xxx"; // NEVER hardcode secrets
 ```
 
 ✅ **ALWAYS**:
+
 ```typescript
 // In edge function
 const apiKey = Deno.env.get("STRIPE_SECRET_KEY");
@@ -658,6 +696,7 @@ Secrets are managed in Lovable Secrets tool, accessed via `Deno.env.get()` in ed
 All tables MUST have RLS enabled with appropriate policies.
 
 **Example**: Users can only see their own orders
+
 ```sql
 CREATE POLICY "Users view own orders"
 ON orders FOR SELECT
@@ -682,6 +721,7 @@ const validated = quoteSchema.parse(userInput);
 #### 4. **Prevent SQL Injection**
 
 ✅ Use Supabase client (parameterized queries):
+
 ```tsx
 const { data } = await supabase
   .from('orders')
@@ -749,6 +789,7 @@ $$;
 ## User Roles & Permissions
 
 ### Buyer
+
 - Can create quotes
 - View own orders
 - Track order progress via LoopTrace™
@@ -756,6 +797,7 @@ $$;
 - View own profile
 
 ### Supplier
+
 - View assigned orders
 - Update production stages
 - Upload progress photos
@@ -763,6 +805,7 @@ $$;
 - View own metrics
 
 ### Admin
+
 - Full access to all data
 - Approve quotes
 - Assign suppliers to orders
@@ -807,85 +850,28 @@ $$;
    - `src/integrations/supabase/client.ts`
 
 2. **Hardcoding environment variables**
+
    ```tsx
    const SUPABASE_URL = "https://xxx.supabase.co"; // ❌
    ```
+
    Use: `import.meta.env.VITE_SUPABASE_URL`
 
 3. **Ignoring TypeScript errors**
    - Always fix type errors, don't use `any` or `@ts-ignore`
 
 4. **Direct DOM manipulation**
+
    ```tsx
    document.getElementById('btn').innerHTML = 'Click'; // ❌
    ```
+
    Use React state and JSX
 
 5. **Skipping RLS policies**
    - Every table with user data MUST have RLS enabled
 
 6. **Exposing sensitive data in URLs**
-   ```tsx
-   navigate(`/order/${orderId}?userEmail=${email}`); // ❌
-   ```
-   Use server-side lookups
-
----
-
-## Quick Commands
-
-```bash
-# Start dev server
-npm run dev
-
-# Install package
-npm install <package>
-
-# Build for production (done in Lovable)
-npm run build
-
-# Pull latest from GitHub
-git pull origin main
-
-# Push changes to GitHub
-git add .
-git commit -m "feat: add supplier dashboard"
-git push origin main
-
-# Create feature branch
-git checkout -b feature/new-feature
-
-# Merge feature branch
-git checkout main
-git merge feature/new-feature
-```
-
----
-
-## Support Resources
-
-- **Lovable Docs**: https://docs.lovable.dev
-- **Supabase Docs**: https://supabase.com/docs
-- **React Docs**: https://react.dev
-- **Tailwind CSS**: https://tailwindcss.com
-- **shadcn/ui**: https://ui.shadcn.com
-
----
-
-## Environment Details
-
-```
-Supabase Project ID: eqpftggctumujhutomom
-Supabase URL: https://eqpftggctumujhutomom.supabase.co
-Edge Functions Base: https://eqpftggctumujhutomom.supabase.co/functions/v1
-Dev Server Port: 8080
-Domain: sleekapparels.com
-```
-
----
-
-**Last Updated**: 2024-11-26  
-**For Questions**: Ask in main Lovable agent context or refer to `docs/EXTERNAL_IDE_WORKFLOW.md`
 
 ---
 
