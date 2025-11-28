@@ -12,13 +12,13 @@ interface ProductionStage {
   id: string;
   stage_name: string;
   stage_number: number;
-  description: string;
+  description: string | null;
   status: string;
-  completion_percentage: number;
+  completion_percentage: number | null;
   started_at: string | null;
   completed_at: string | null;
   target_date: string | null;
-  photos: string[];
+  photos: string[] | null;
   notes: string | null;
 }
 
@@ -27,11 +27,11 @@ interface OrderWithTracking {
   order_number: string;
   product_type: string;
   quantity: number;
-  workflow_status: string;
+  workflow_status: string | null;
   expected_delivery_date: string | null;
   supplier_orders: {
     id: string;
-    supplier_id: string;
+    supplier_id: string | null;
     suppliers: {
       company_name: string;
     };

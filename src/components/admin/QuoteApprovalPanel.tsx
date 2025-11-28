@@ -16,7 +16,7 @@ interface Quote {
   total_price: number;
   customer_name: string | null;
   customer_email: string | null;
-  status: string;
+  status: string | null;
   created_at: string;
   quote_data: any;
 }

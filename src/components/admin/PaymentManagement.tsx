@@ -28,14 +28,16 @@ interface Invoice {
   invoice_number: string;
   amount: number;
   payment_type: string;
-  status: string;
-  due_date: string;
-  paid_at?: string;
-  created_at: string;
+  status: string | null;
+  due_date: string | null;
+  paid_at: string | null;
+  created_at: string | null;
+  pdf_url: string | null;
+  order_id: string | null;
   orders: {
     order_number: string;
     buyer_id: string;
-  };
+  } | null;
 }
 
 export const PaymentManagement = () => {

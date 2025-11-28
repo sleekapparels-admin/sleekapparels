@@ -9,25 +9,25 @@ interface SecurityEvent {
   event_type: string;
   severity: string;
   source: string;
-  ip_address: string;
+  ip_address: string | null;
   details: any;
-  created_at: string;
+  created_at: string | null;
 }
 
 interface CostData {
-  hour: string;
-  function_name: string;
-  model: string;
-  request_count: number;
-  total_cost: number;
+  hour: string | null;
+  function_name: string | null;
+  model: string | null;
+  request_count: number | null;
+  total_cost: number | null;
 }
 
 interface SecuritySummary {
-  day: string;
-  event_type: string;
-  severity: string;
-  event_count: number;
-  unique_ips: number;
+  day: string | null;
+  event_type: string | null;
+  severity: string | null;
+  event_count: number | null;
+  unique_ips: number | null;
 }
 
 export const SecurityMonitoringDashboard = () => {

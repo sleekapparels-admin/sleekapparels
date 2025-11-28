@@ -13,16 +13,16 @@ interface Invoice {
   invoice_number: string;
   amount: number;
   payment_type: string;
-  status: string;
+  status: string | null;
   due_date: string | null;
   paid_at: string | null;
-  created_at: string;
+  created_at: string | null;
   pdf_url: string | null;
-  order_id: string;
+  order_id: string | null;
   orders: {
     order_number: string;
     product_type: string;
-  };
+  } | null;
 }
 
 export const InvoicesPaymentsSection = () => {
