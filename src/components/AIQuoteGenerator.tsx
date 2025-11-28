@@ -66,6 +66,7 @@ interface QuoteResult {
 export const AIQuoteGenerator = () => {
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
+  const [loadingProgress, setLoadingProgress] = useState(0);
   const [quoteResult, setQuoteResult] = useState<QuoteResult | null>(null);
   
   const [formData, setFormData] = useState({
@@ -123,6 +124,27 @@ export const AIQuoteGenerator = () => {
     e.preventDefault();
     
     setLoading(true);
+    setLoadingProgress(0);
+
+    // Simulate progress for better UX
+    const progressInterval = setInterval(() => {
+      setLoadingProgress(prev => {
+        if (prev >= 90) return prev;
+        return prev + 10;
+      });
+    }, 3000);
+
+    // Set a client-side timeout fallback (35 seconds - slightly longer than server timeout)
+    const timeoutId = setTimeout(() => {
+      clearInterval(progressInterval);
+      setLoading(false);
+      setLoadingProgress(0);
+      toast({
+        title: "Request Timeout",
+        description: "The quote is taking longer than expected. Please try again or simplify your requirements.",
+        variant: "destructive"
+      });
+    }, 35000);
 
     try {
       // Client-side validation
@@ -137,6 +159,8 @@ export const AIQuoteGenerator = () => {
         customerName: formData.customerName || undefined,
         customerEmail: formData.customerEmail,
       });
+
+      setLoadingProgress(20);
 
       // Convert files to base64 for API
       const fileData = await Promise.all(
@@ -155,7 +179,9 @@ export const AIQuoteGenerator = () => {
         })
       );
 
-      // Use the enhanced API
+      setLoadingProgress(40);
+
+      // Use the enhanced API with retry logic
       const result = await generateAIQuote({
         ...validated,
         productType: validated.productType,
@@ -168,6 +194,10 @@ export const AIQuoteGenerator = () => {
         files: fileData.length > 0 ? fileData : undefined,
       });
 
+      clearTimeout(timeoutId);
+      clearInterval(progressInterval);
+      setLoadingProgress(100);
+
       setQuoteResult(result);
       
       toast({
@@ -176,6 +206,8 @@ export const AIQuoteGenerator = () => {
       });
 
     } catch (error) {
+      clearTimeout(timeoutId);
+      clearInterval(progressInterval);
       console.error('Error generating quote:', error);
       
       if (error instanceof z.ZodError) {
@@ -187,14 +219,18 @@ export const AIQuoteGenerator = () => {
         });
       } else {
         const errorMessage = error instanceof Error ? error.message : 'Failed to generate quote. Please try again.';
+        const isTimeout = errorMessage.includes('timeout') || errorMessage.includes('30 seconds');
+        
         toast({
-          title: "Error Generating Quote",
+          title: isTimeout ? "Request Timeout" : "Error Generating Quote",
           description: errorMessage,
           variant: "destructive"
         });
       }
     } finally {
+      clearInterval(progressInterval);
       setLoading(false);
+      setLoadingProgress(0);
     }
   };
 
@@ -416,7 +452,7 @@ export const AIQuoteGenerator = () => {
                 {loading ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Generating...
+                    {loadingProgress > 0 ? `Generating... ${loadingProgress}%` : 'Generating...'}
                   </>
                 ) : (
                   <>
@@ -425,6 +461,14 @@ export const AIQuoteGenerator = () => {
                   </>
                 )}
               </Button>
+              {loading && loadingProgress > 0 && (
+                <div className="w-full bg-secondary rounded-full h-2 overflow-hidden">
+                  <div 
+                    className="bg-primary h-full transition-all duration-300 ease-out"
+                    style={{ width: `${loadingProgress}%` }}
+                  />
+                </div>
+              )}
             </form>
           </CardContent>
         </Card>

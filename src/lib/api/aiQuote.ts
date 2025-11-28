@@ -44,6 +44,7 @@ export interface AIQuoteResponse {
 
 /**
  * Generate an AI-powered quote with Bangladesh manufacturing intelligence
+ * Includes automatic retry logic and timeout handling
  */
 export const generateAIQuote = async (request: AIQuoteRequest): Promise<AIQuoteResponse> => {
   // Get or create session ID
@@ -55,32 +56,93 @@ export const generateAIQuote = async (request: AIQuoteRequest): Promise<AIQuoteR
 
   console.log('Generating AI quote with request:', request);
 
-  try {
-    const { data, error } = await supabase.functions.invoke('ai-quote-generator', {
-      body: {
-        ...request,
-        sessionId,
-        // Provide local pricing context to help AI
-        context: {
-          localCalculations: getLocalPricingEstimate(request),
+  const maxRetries = 2;
+  let lastError: Error | null = null;
+
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      // Create abort controller for timeout (30 seconds)
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => {
+        controller.abort();
+        console.warn(`Quote generation timeout after 30s (attempt ${attempt + 1}/${maxRetries + 1})`);
+      }, 30000);
+
+      try {
+        const { data, error } = await supabase.functions.invoke('ai-quote-generator', {
+          body: {
+            ...request,
+            sessionId,
+            // Provide local pricing context to help AI
+            context: {
+              localCalculations: getLocalPricingEstimate(request),
+            }
+          },
+          // Note: Supabase client doesn't support AbortSignal directly
+          // The timeout is handled server-side with our 25s AI timeout
+        });
+
+        clearTimeout(timeoutId);
+
+        if (error) {
+          console.error('AI Quote Generator error:', error);
+          
+          // Check if error is retryable
+          const errorData = error as any;
+          if (errorData.retryable === false || errorData.code === 'VALIDATION_ERROR') {
+            // Don't retry validation errors
+            throw new Error(error.message || 'Failed to generate quote');
+          }
+          
+          // For retryable errors, continue to retry logic
+          if (attempt < maxRetries) {
+            const retryDelay = errorData.retryAfter ? errorData.retryAfter * 1000 : (attempt + 1) * 1000;
+            console.log(`Retrying in ${retryDelay}ms (attempt ${attempt + 1}/${maxRetries + 1})`);
+            await new Promise(resolve => setTimeout(resolve, retryDelay));
+            lastError = new Error(error.message || 'Failed to generate quote');
+            continue;
+          }
+          
+          throw new Error(error.message || 'Failed to generate quote');
         }
+
+        if (!data || !data.success) {
+          throw new Error(data?.error || 'Invalid response from quote generator');
+        }
+
+        return data as AIQuoteResponse;
+      } finally {
+        clearTimeout(timeoutId);
       }
-    });
-
-    if (error) {
-      console.error('AI Quote Generator error:', error);
-      throw new Error(error.message || 'Failed to generate quote');
+    } catch (error) {
+      console.error(`Quote generation failed (attempt ${attempt + 1}/${maxRetries + 1}):`, error);
+      lastError = error as Error;
+      
+      // Check if it's an abort error (timeout)
+      if (error instanceof Error && error.name === 'AbortError') {
+        if (attempt < maxRetries) {
+          console.log(`Timeout - retrying in ${(attempt + 1) * 2000}ms`);
+          await new Promise(resolve => setTimeout(resolve, (attempt + 1) * 2000));
+          continue;
+        }
+        throw new Error('Request timed out after 30 seconds. Please try again with simpler requirements or contact support.');
+      }
+      
+      // For other errors, retry with exponential backoff
+      if (attempt < maxRetries) {
+        const backoffDelay = Math.min(1000 * Math.pow(2, attempt), 5000);
+        console.log(`Retrying in ${backoffDelay}ms`);
+        await new Promise(resolve => setTimeout(resolve, backoffDelay));
+        continue;
+      }
+      
+      // Final attempt failed
+      throw error;
     }
-
-    if (!data || !data.success) {
-      throw new Error(data?.error || 'Invalid response from quote generator');
-    }
-
-    return data as AIQuoteResponse;
-  } catch (error) {
-    console.error('Quote generation failed:', error);
-    throw error;
   }
+
+  // Should never reach here, but TypeScript needs it
+  throw lastError || new Error('Failed to generate quote after multiple attempts');
 };
 
 /**
@@ -158,10 +220,13 @@ export const getUserQuotes = async (): Promise<any[]> => {
     
     if (session?.user?.id) {
       // Authenticated user - get their quotes
+      const userEmail = session.user.email;
+      if (!userEmail) return [];
+      
       const { data, error } = await supabase
         .from('ai_quotes')
         .select('*')
-        .eq('customer_email', session.user.email)
+        .eq('customer_email', userEmail)
         .order('created_at', { ascending: false });
       
       if (error) throw error;

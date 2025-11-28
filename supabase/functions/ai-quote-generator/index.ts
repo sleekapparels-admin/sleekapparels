@@ -391,7 +391,7 @@ Deno.serve(async (req) => {
     const tryFetchConfig = async (cat: string) => {
       return await supabaseClient
         .from('quote_configurations')
-        .select('*')
+        .select('id, product_category, base_price_per_unit, complexity_multiplier, moq_min, moq_max, sampling_days, production_days_per_100_units, is_active')
         .eq('product_category', cat)
         .eq('is_active', true)
         .maybeSingle();
@@ -593,6 +593,10 @@ Keep response professional, specific to Bangladesh manufacturing, and actionable
         ? 'google/gemini-2.5-pro'  // Better for visual analysis + reasoning
         : 'google/gemini-2.5-flash'; // Fast for text-only quotes
       
+      // Set timeout for AI API call (25 seconds to allow response before overall timeout)
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 25000);
+      
       const aiResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
         method: 'POST',
         headers: {
@@ -604,7 +608,10 @@ Keep response professional, specific to Bangladesh manufacturing, and actionable
           messages: messages,
           max_completion_tokens: 1000
         }),
+        signal: controller.signal
       });
+
+      clearTimeout(timeoutId);
 
       if (aiResponse.ok) {
         const aiData = await aiResponse.json();
@@ -614,13 +621,25 @@ Keep response professional, specific to Bangladesh manufacturing, and actionable
         // Log AI usage for cost tracking
         const estimatedCost = validated.files && validated.files.length > 0 ? 0.05 : 0.01;
         await logAIUsage(supabaseClient, sessionId, userId, estimatedCost, requestData);
+      } else if (aiResponse.status === 429) {
+        console.warn(`[${requestId}] AI API rate limit exceeded`);
+        aiSuggestions = 'AI analysis temporarily unavailable due to high demand. Quote pricing is still accurate based on our manufacturing data.';
+      } else if (aiResponse.status === 402) {
+        console.error(`[${requestId}] AI API payment required`);
+        aiSuggestions = 'AI analysis temporarily unavailable. Quote pricing is based on our verified manufacturing data.';
       } else {
-        console.error(`[${requestId}] AI API error:`, await aiResponse.text());
-        aiSuggestions = 'AI analysis temporarily unavailable. Using standard manufacturing recommendations.';
+        const errorText = await aiResponse.text();
+        console.error(`[${requestId}] AI API error (${aiResponse.status}):`, errorText);
+        aiSuggestions = 'AI analysis temporarily unavailable. Using standard manufacturing recommendations based on industry expertise.';
       }
     } catch (aiError) {
-      console.error(`[${requestId}] AI generation error:`, aiError);
-      aiSuggestions = 'AI analysis temporarily unavailable. Using standard manufacturing recommendations.';
+      if (aiError instanceof Error && aiError.name === 'AbortError') {
+        console.error(`[${requestId}] AI API timeout after 25 seconds`);
+        aiSuggestions = 'AI analysis timed out. Your quote is based on verified manufacturing data and industry standards.';
+      } else {
+        console.error(`[${requestId}] AI generation error:`, aiError);
+        aiSuggestions = 'AI analysis temporarily unavailable. Using standard manufacturing recommendations based on industry expertise.';
+      }
     }
 
     // Build quote data
@@ -734,19 +753,54 @@ Keep response professional, specific to Bangladesh manufacturing, and actionable
       return new Response(
         JSON.stringify({ 
           error: 'Invalid input data. Please check your form and try again.',
+          code: 'VALIDATION_ERROR',
           details: error.errors.map(e => ({ field: e.path.join('.'), message: e.message })),
-          requestId
+          requestId,
+          retryable: false
         }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
     
-    // Generic error for security
+    // Handle database errors (retryable)
+    if (error instanceof Error && (error.message.includes('PGRST') || error.message.includes('database'))) {
+      console.error(`[${requestId}] Database error - retryable`);
+      return new Response(
+        JSON.stringify({ 
+          error: 'Temporary database issue. Please try again in a moment.',
+          code: 'DATABASE_ERROR',
+          requestId,
+          retryable: true,
+          retryAfter: 5
+        }),
+        { status: 503, headers: { ...corsHeaders, 'Content-Type': 'application/json', 'Retry-After': '5' } }
+      );
+    }
+    
+    // Handle timeout errors (retryable)
+    if (error instanceof Error && (error.name === 'AbortError' || error.message.includes('timeout'))) {
+      console.error(`[${requestId}] Request timeout - retryable`);
+      return new Response(
+        JSON.stringify({ 
+          error: 'Request timed out. Please try again.',
+          code: 'TIMEOUT_ERROR',
+          requestId,
+          retryable: true,
+          retryAfter: 3
+        }),
+        { status: 504, headers: { ...corsHeaders, 'Content-Type': 'application/json', 'Retry-After': '3' } }
+      );
+    }
+    
+    // Generic error for security (potentially retryable)
     return new Response(
       JSON.stringify({ 
-      error: 'Failed to generate quote. Please try again or contact support.',
-      requestId
-    }),
+        error: 'Failed to generate quote. Please try again or contact support.',
+        code: 'INTERNAL_ERROR',
+        requestId,
+        retryable: true,
+        supportContact: 'support@sleekapparels.com'
+      }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }
