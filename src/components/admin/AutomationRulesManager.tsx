@@ -15,7 +15,7 @@ interface AutomationRule {
   priority: number;
   conditions: any;
   actions: any;
-  created_at: string;
+  created_at: string | null;
 }
 
 export const AutomationRulesManager = () => {

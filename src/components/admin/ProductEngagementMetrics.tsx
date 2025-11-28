@@ -6,19 +6,19 @@ import { Eye, Heart, MousePointer, Palette, Pencil, MessageSquare, TrendingUp } 
 import { Skeleton } from "@/components/ui/skeleton";
 
 interface ProductMetrics {
-  product_id: string;
-  product_name: string;
-  category: string;
-  unique_sessions: number;
-  hover_count: number;
-  quick_view_count: number;
-  wishlist_count: number;
-  color_swatch_count: number;
-  design_click_count: number;
-  quote_click_count: number;
-  view_details_count: number;
-  total_interactions: number;
-  last_interaction: string;
+  product_id: string | null;
+  product_name: string | null;
+  category: string | null;
+  unique_sessions: number | null;
+  hover_count: number | null;
+  quick_view_count: number | null;
+  wishlist_count: number | null;
+  color_swatch_count: number | null;
+  design_click_count: number | null;
+  quote_click_count: number | null;
+  view_details_count: number | null;
+  total_interactions: number | null;
+  last_interaction: string | null;
 }
 
 export const ProductEngagementMetrics = () => {

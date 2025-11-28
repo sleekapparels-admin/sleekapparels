@@ -14,8 +14,8 @@ interface CMSContent {
   section: string;
   content_type: string;
   content: any;
-  active: boolean;
-  display_order: number;
+  active: boolean | null;
+  display_order: number | null;
 }
 
 export const CMSManagementPanel = () => {

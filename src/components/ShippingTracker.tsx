@@ -15,11 +15,11 @@ interface ShippingInfo {
   tracking_number: string;
   carrier: string;
   status: string;
-  shipped_date?: string;
-  estimated_delivery?: string;
-  actual_delivery?: string;
-  current_location?: string;
-  notes?: string;
+  shipped_date: string | null;
+  estimated_delivery: string | null;
+  actual_delivery: string | null;
+  current_location: string | null;
+  notes: string | null;
 }
 
 interface ShippingTrackerProps {

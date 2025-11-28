@@ -13,7 +13,7 @@ interface Quote {
   quantity: number;
   total_price: number;
   estimated_delivery_days: number;
-  status: string;
+  status: string | null;
   created_at: string;
   quote_data: any;
   converted_to_order_id: string | null;
