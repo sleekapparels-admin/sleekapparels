@@ -9,6 +9,7 @@ import { toast } from 'sonner';
 
 export default function SetupAdmin() {
   const [email, setEmail] = useState('');
+  const [token, setToken] = useState('');
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
@@ -21,8 +22,8 @@ export default function SetupAdmin() {
     setSuccess(false);
 
     try {
-      const { data, error } = await supabase.functions.invoke('setup-first-admin', {
-        body: { email }
+      const { data, error } = await supabase.functions.invoke('bootstrap-admin', {
+        body: { email, token }
       });
 
       if (error) throw error;
@@ -55,7 +56,7 @@ export default function SetupAdmin() {
           </div>
           <CardTitle className="text-2xl">First Admin Setup</CardTitle>
           <CardDescription>
-            This is a one-time setup to create the first administrator account.
+            This is a one-time secure setup to create the first administrator account.
             This function automatically disables after the first admin is created.
           </CardDescription>
         </CardHeader>
@@ -94,6 +95,24 @@ export default function SetupAdmin() {
                 </p>
               </div>
 
+              <div className="space-y-2">
+                <label htmlFor="token" className="text-sm font-medium">
+                  Bootstrap Token
+                </label>
+                <Input
+                  id="token"
+                  type="password"
+                  placeholder="Enter your bootstrap token"
+                  value={token}
+                  onChange={(e) => setToken(e.target.value)}
+                  required
+                  disabled={loading}
+                />
+                <p className="text-xs text-muted-foreground">
+                  Enter the secure bootstrap token configured in your backend secrets.
+                </p>
+              </div>
+
               {error && (
                 <div className="flex items-start gap-2 p-3 rounded-lg bg-destructive/10 border border-destructive/20">
                   <XCircle className="w-5 h-5 text-destructive flex-shrink-0 mt-0.5" />
@@ -107,15 +126,15 @@ export default function SetupAdmin() {
               <Button
                 type="submit"
                 className="w-full"
-                disabled={loading || !email}
+                disabled={loading || !email || !token}
               >
                 {loading ? 'Setting up...' : 'Setup First Admin'}
               </Button>
 
               <div className="pt-4 border-t">
                 <p className="text-xs text-center text-muted-foreground">
-                  🔒 This is a secure, self-disabling setup function that only works
-                  when no admin accounts exist in the system.
+                  🔒 This is a secure, self-disabling setup function with token verification,
+                  rate limiting, and IP tracking. Only works when no admin accounts exist.
                 </p>
               </div>
             </form>
