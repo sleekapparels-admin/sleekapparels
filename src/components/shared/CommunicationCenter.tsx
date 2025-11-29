@@ -11,14 +11,14 @@ import { format } from "date-fns";
 
 interface Message {
   id: string;
-  subject: string;
+  subject: string | null;
   message: string;
-  sender_id: string;
-  recipient_id: string;
+  sender_id: string | null;
+  recipient_id: string | null;
   order_id: string | null;
-  read: boolean;
-  created_at: string;
-  attachments: string[];
+  read: boolean | null;
+  created_at: string | null;
+  attachments: string[] | null;
 }
 
 interface CommunicationCenterProps {

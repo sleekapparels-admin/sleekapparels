@@ -216,7 +216,7 @@ export const SecurityMonitoringDashboard = () => {
                     )}
                   </div>
                   <span className="text-xs text-muted-foreground whitespace-nowrap ml-4">
-                    {new Date(event.created_at).toLocaleString()}
+                    {event.created_at ? new Date(event.created_at).toLocaleString() : 'N/A'}
                   </span>
                 </div>
               ))
@@ -248,7 +248,7 @@ export const SecurityMonitoringDashboard = () => {
                   <div className="text-right">
                     <p className="font-bold text-lg">${Number(cost.total_cost).toFixed(4)}</p>
                     <p className="text-xs text-muted-foreground">
-                      {new Date(cost.hour).toLocaleString()}
+                      {cost.hour ? new Date(cost.hour).toLocaleString() : 'N/A'}
                     </p>
                   </div>
                 </div>
@@ -272,14 +272,14 @@ export const SecurityMonitoringDashboard = () => {
               securitySummary.map((summary, idx) => (
                 <div key={idx} className="flex items-center justify-between p-3 border rounded-lg">
                   <div>
-                    <p className="font-medium text-sm">{summary.event_type.replace(/_/g, ' ')}</p>
+                    <p className="font-medium text-sm">{(summary.event_type ?? 'unknown').replace(/_/g, ' ')}</p>
                     <p className="text-xs text-muted-foreground">
                       {summary.unique_ips} unique IPs
                     </p>
                   </div>
                   <div className="text-right">
-                    <span className={`px-2 py-1 text-xs font-semibold rounded ${getSeverityColor(summary.severity)}`}>
-                      {summary.severity}
+                    <span className={`px-2 py-1 text-xs font-semibold rounded ${getSeverityColor(summary.severity ?? 'info')}`}>
+                      {summary.severity ?? 'info'}
                     </span>
                     <p className="text-sm font-bold mt-1">{summary.event_count} events</p>
                   </div>

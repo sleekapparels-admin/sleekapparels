@@ -218,7 +218,7 @@ export const LoopTraceOrderTracking = () => {
 
   const calculateOverallProgress = () => {
     if (stages.length === 0) return 0;
-    const total = stages.reduce((sum, stage) => sum + stage.completion_percentage, 0);
+    const total = stages.reduce((sum, stage) => sum + (stage.completion_percentage ?? 0), 0);
     return Math.round(total / stages.length);
   };
 

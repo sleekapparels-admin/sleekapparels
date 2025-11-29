@@ -115,7 +115,7 @@ const InnovationShowcase = lazy(() => import("./pages/InnovationShowcase"));
 const AdvancedFeatures = lazy(() => import("./pages/AdvancedFeatures"));
 const AIVisualShowcase = lazy(() => import("./pages/AIVisualShowcase"));
 // AdminSetup page removed (security hardening)
-// AdminBootstrap page removed (used once, now deleted for security)
+import SetupAdmin from "./pages/SetupAdmin";
 import QuoteHistory from "./pages/QuoteHistory";
 import QuoteDetails from "./pages/QuoteDetails";
 const Unauthorized = lazy(() => import("./pages/Unauthorized"));
@@ -285,7 +285,7 @@ const router = createBrowserRouter([
         { path: "/terms", element: <Terms /> },
         { path: "/innovation-showcase", element: <InnovationShowcase /> },
         { path: "/advanced-features", element: <AdvancedFeatures /> },
-        // Admin Setup page removed
+        { path: "/setup-admin", element: <SetupAdmin /> },
         
         // SEO Landing Pages (High-Priority Keywords)
         { path: "/low-moq-clothing-manufacturer-bangladesh", element: <LowMOQManufacturer /> },

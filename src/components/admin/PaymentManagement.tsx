@@ -206,12 +206,12 @@ export const PaymentManagement = () => {
                 <TableCell className="capitalize">{invoice.payment_type}</TableCell>
                 <TableCell className="font-semibold">${invoice.amount.toFixed(2)}</TableCell>
                 <TableCell>
-                  <Badge variant={getStatusColor(invoice.status)} className="gap-1">
-                    {getStatusIcon(invoice.status)}
-                    {invoice.status}
+                  <Badge variant={getStatusColor(invoice.status ?? 'pending')} className="gap-1">
+                    {getStatusIcon(invoice.status ?? 'pending')}
+                    {invoice.status ?? 'pending'}
                   </Badge>
                 </TableCell>
-                <TableCell>{format(new Date(invoice.due_date), 'MMM dd, yyyy')}</TableCell>
+                <TableCell>{invoice.due_date ? format(new Date(invoice.due_date), 'MMM dd, yyyy') : 'N/A'}</TableCell>
                 <TableCell>
                   <Button variant="ghost" size="sm">
                     View

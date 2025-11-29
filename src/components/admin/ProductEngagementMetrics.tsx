@@ -40,7 +40,7 @@ export const ProductEngagementMetrics = () => {
       
       // Sort and limit on client side since RPC doesn't support order/limit
       const sortedData = (data || [])
-        .sort((a: ProductMetrics, b: ProductMetrics) => b.total_interactions - a.total_interactions)
+        .sort((a: ProductMetrics, b: ProductMetrics) => (b.total_interactions ?? 0) - (a.total_interactions ?? 0))
         .slice(0, 10);
       
       setMetrics(sortedData);
@@ -196,7 +196,7 @@ export const ProductEngagementMetrics = () => {
                     <span>Engagement Score:</span>
                     <span className="font-semibold text-foreground">
                       {Math.round(
-                        (metric.total_interactions / Math.max(metric.unique_sessions, 1)) * 10
+                        ((metric.total_interactions ?? 0) / Math.max(metric.unique_sessions ?? 1, 1)) * 10
                       ) / 10} interactions per session
                     </span>
                   </div>

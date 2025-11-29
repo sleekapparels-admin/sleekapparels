@@ -181,10 +181,10 @@ export const InvoicesPaymentsSection = () => {
                     <div>
                       <CardTitle className="text-lg">Invoice #{invoice.invoice_number}</CardTitle>
                       <p className="text-sm text-muted-foreground mt-1">
-                        Order #{invoice.orders.order_number} • {invoice.orders.product_type}
+                        Order #{invoice.orders?.order_number ?? 'N/A'} • {invoice.orders?.product_type ?? 'N/A'}
                       </p>
                     </div>
-                    {getStatusBadge(invoice.status)}
+                    {getStatusBadge(invoice.status ?? 'pending')}
                   </div>
                 </CardHeader>
                 <CardContent>
@@ -206,7 +206,7 @@ export const InvoicesPaymentsSection = () => {
                     <div>
                       <p className="text-sm text-muted-foreground">Issued</p>
                       <p className="text-lg font-semibold">
-                        {format(new Date(invoice.created_at), 'MMM dd, yyyy')}
+                        {invoice.created_at ? format(new Date(invoice.created_at), 'MMM dd, yyyy') : 'N/A'}
                       </p>
                     </div>
                   </div>
@@ -220,7 +220,7 @@ export const InvoicesPaymentsSection = () => {
                     {invoice.status === 'pending' && (
                       <Button 
                         size="sm"
-                        onClick={() => handlePayNow(invoice.id, invoice.order_id, invoice.amount)}
+                        onClick={() => handlePayNow(invoice.id, invoice.order_id ?? '', invoice.amount)}
                         disabled={paymentLoading}
                       >
                         <CreditCard className="h-4 w-4 mr-2" />

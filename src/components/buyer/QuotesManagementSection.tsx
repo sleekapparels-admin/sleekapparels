@@ -39,7 +39,7 @@ export const QuotesManagementSection = () => {
       let query = supabase
         .from('ai_quotes')
         .select('*')
-        .eq('customer_email', user.email)
+        .eq('customer_email', user.email ?? '')
         .order('created_at', { ascending: false });
 
       if (filter !== 'all') {
@@ -138,7 +138,7 @@ export const QuotesManagementSection = () => {
               <CardHeader>
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-3">
-                    {getStatusIcon(quote.status, !!quote.converted_to_order_id)}
+                    {getStatusIcon(quote.status ?? 'pending', !!quote.converted_to_order_id)}
                     <div>
                       <CardTitle className="text-lg">{quote.product_type}</CardTitle>
                       <p className="text-sm text-muted-foreground">
@@ -146,7 +146,7 @@ export const QuotesManagementSection = () => {
                       </p>
                     </div>
                   </div>
-                  {getStatusBadge(quote.status, !!quote.converted_to_order_id)}
+                  {getStatusBadge(quote.status ?? 'pending', !!quote.converted_to_order_id)}
                 </div>
               </CardHeader>
               <CardContent>
