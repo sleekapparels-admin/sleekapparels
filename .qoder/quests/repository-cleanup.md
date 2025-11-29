@@ -22,7 +22,14 @@ The repository has accumulated substantial technical debt through iterative deve
 
 ### Known Resolved Issues
 
-The AIVisualShowcase component build error related to SupplierProfileCard and framer-motion has been temporarily resolved through component disabling. This cleanup initiative will determine whether to restore or permanently remove affected components.
+The AIVisualShowcase component build error related to SupplierProfileCard and framer-motion has been temporarily resolved through component commenting. Current status:
+
+- AIVisualShowcase.tsx: Active and routed at `/ai-visual-showcase`
+- SupplierProfileCard.tsx: Fully functional component exists but import is commented in AIVisualShowcase
+- Component displays placeholder message instead of actual supplier cards
+- All other showcase components (PainPointSelector, MOQComparisonChart, TimelineComparisonChart) are fully operational
+
+This cleanup initiative will determine the final disposition of the SupplierProfileCard integration.
 
 ## Scope Definition
 
@@ -334,58 +341,265 @@ Based on Phase 3 analysis outcome:
 | firebase | Backend services | If retained, use modular imports only |
 | jspdf + jspdf-autotable | PDF generation | Evaluate if feature usage justifies bundle impact |
 
-### Phase 7: Component Cleanup Strategy
+### Phase 7: Environment Variable Validation and Cleanup
 
-Address the disabled AIVisualShowcase component and related SupplierProfileCard issues.
+Validate and debug all `import.meta.env` usage across the codebase to ensure proper environment variable configuration and eliminate potential runtime errors.
+
+#### Current State Assessment
+
+Environment variable usage detected in 25+ locations across:
+- Source code files (TypeScript/TSX components)
+- Documentation files (markdown)
+- Configuration validators
+- Analytics and performance tracking
+
+#### Issues to Address
+
+1. **Missing .env.example Template**
+   - No template file exists for developers to reference required variables
+   - Unclear which environment variables are mandatory vs. optional
+   - Risk of missing configuration in local development and deployment
+
+2. **import.meta.env Usage Validation**
+   - Verify all `import.meta.env` references have proper fallback handling
+   - Identify any direct usage without validation that could cause runtime errors
+   - Ensure type safety for environment variable access
+
+3. **Documentation References**
+   - Documentation files contain `import.meta.env` examples that may be outdated
+   - Need to verify consistency between docs and actual implementation
+
+#### Environment Variable Inventory
+
+Based on codebase analysis, the following environment variables are referenced:
+
+| Variable Name | Usage Location | Required | Current Status |
+|---------------|----------------|----------|----------------|
+| VITE_SUPABASE_URL | src/integrations/supabase/client.ts | Yes | Active |
+| VITE_SUPABASE_PUBLISHABLE_KEY | src/integrations/supabase/client.ts | Yes | Active |
+| import.meta.env.DEV | Multiple files (dev mode checks) | Automatic | Vite built-in |
+| import.meta.env.PROD | src/lib/env-validator.ts | Automatic | Vite built-in |
+
+#### Validation Files Analysis
+
+**src/lib/env-validator.ts** - Primary validation module:
+- Lines 58, 68, 82: Direct `import.meta.env[key]` access
+- Lines 100-101: Supabase credentials validation
+- Lines 112, 119, 126: Environment helper functions
+- **Status**: Needs review for error handling
+
+**src/integrations/supabase/client.ts** - Critical configuration:
+- Lines 5-6: Direct assignment from `import.meta.env`
+- **Risk**: No fallback if variables are undefined
+- **Action Required**: Add validation before client initialization
+
+**src/lib/diagnostics.ts** - Configuration diagnostics:
+- Line 105: Checks for missing required environment variables
+- **Status**: Good practice, but needs to run during build
+
+#### Cleanup and Debug Actions
+
+**Action 1: Create .env.example Template** (Phase 5 enhancement)
+
+Expand the .env.example file with comprehensive documentation:
+
+```
+# ============================================
+# REQUIRED: Supabase Configuration
+# ============================================
+# Get these from: https://supabase.com/dashboard/project/YOUR_PROJECT/settings/api
+VITE_SUPABASE_URL=https://your-project.supabase.co
+VITE_SUPABASE_PUBLISHABLE_KEY=your-anon-public-key-here
+
+# ============================================
+# OPTIONAL: Feature Flags
+# ============================================
+# Uncomment to enable specific features
+# VITE_ENABLE_ANALYTICS=true
+# VITE_ENABLE_DEBUG_MODE=false
+
+# ============================================
+# OPTIONAL: Third-Party Integrations
+# ============================================
+# VITE_STRIPE_PUBLISHABLE_KEY=pk_test_...
+# VITE_GA_MEASUREMENT_ID=G-XXXXXXXXXX
+
+# ============================================
+# AUTOMATIC: Vite Environment Variables
+# ============================================
+# These are automatically set by Vite:
+# - import.meta.env.DEV (true in development)
+# - import.meta.env.PROD (true in production)
+# - import.meta.env.MODE (current mode: development/production)
+```
+
+**Action 2: Audit and Fix Unsafe import.meta.env Usage**
+
+Files requiring validation improvements:
+
+1. **src/integrations/supabase/client.ts**
+   - Current: Direct assignment without validation
+   - Required: Add validation or use env-validator module
+   - Example fix:
+   ```typescript
+   import { env } from '@/lib/env-validator';
+   
+   const SUPABASE_URL = env.get('VITE_SUPABASE_URL');
+   const SUPABASE_PUBLISHABLE_KEY = env.get('VITE_SUPABASE_PUBLISHABLE_KEY');
+   
+   if (!SUPABASE_URL || !SUPABASE_PUBLISHABLE_KEY) {
+     throw new Error('Missing required Supabase configuration');
+   }
+   ```
+
+2. **src/lib/env-validator.ts**
+   - Review error handling for missing variables
+   - Ensure consistent validation approach
+   - Add TypeScript type definitions for environment variables
+
+**Action 3: Remove or Update Documentation References**
+
+Documentation files containing `import.meta.env` examples:
+
+| File | Lines | Action |
+|------|-------|--------|
+| BACKEND_AUDIT_REPORT.md | 215, 219 | Move to docs/architecture/ and verify examples |
+| EXTENDED_COMPLIANCE_AUDIT.md | 171, 175, 397, 400 | Move to docs/architecture/ and update |
+
+These documentation files:
+- Will be moved to docs/ during Phase 1 (Documentation Reorganization)
+- Should have examples verified against current implementation
+- May need updates if environment variable names have changed
+
+**Action 4: Add Environment Variable Type Definitions**
+
+Create `src/vite-env.d.ts` enhancement:
+
+```typescript
+/// <reference types="vite/client" />
+
+interface ImportMetaEnv {
+  // Required variables
+  readonly VITE_SUPABASE_URL: string;
+  readonly VITE_SUPABASE_PUBLISHABLE_KEY: string;
+  
+  // Optional variables
+  readonly VITE_STRIPE_PUBLISHABLE_KEY?: string;
+  readonly VITE_GA_MEASUREMENT_ID?: string;
+  readonly VITE_ENABLE_ANALYTICS?: string;
+  readonly VITE_ENABLE_DEBUG_MODE?: string;
+  
+  // Vite built-in variables
+  readonly DEV: boolean;
+  readonly PROD: boolean;
+  readonly MODE: string;
+}
+
+interface ImportMeta {
+  readonly env: ImportMetaEnv;
+}
+```
+
+**Action 5: Build-Time Validation**
+
+Add pre-build validation to ensure required environment variables exist:
+
+1. Update vite.config.ts to validate environment on build
+2. Fail build early if critical variables are missing
+3. Provide clear error messages indicating which variables are required
+
+#### Decision Matrix: Import.meta.env Files
+
+| File Type | Action | Rationale |
+|-----------|--------|----------|
+| Source code (.ts/.tsx) | **Debug & Validate** | Production code must have proper error handling |
+| Documentation (.md) | **Verify & Update** | Examples should match current implementation |
+| Configuration (vite.config.ts) | **Keep & Enhance** | Required for build process |
+| Type definitions (vite-env.d.ts) | **Create/Update** | Ensures type safety |
+
+#### Success Criteria
+
+- [ ] .env.example file created with all required variables documented
+- [ ] All `import.meta.env` usage in source code has proper validation
+- [ ] Type definitions exist for all environment variables
+- [ ] Build-time validation prevents deployment with missing configuration
+- [ ] Documentation examples verified and updated
+- [ ] No runtime errors due to undefined environment variables
+- [ ] Clear error messages guide developers when variables are missing
+
+### Phase 8: Component Cleanup Strategy
+
+Address the SupplierProfileCard integration in AIVisualShowcase component.
 
 #### Component Status Analysis
 
 Current State:
-- AIVisualShowcase.tsx exists but is disabled due to build errors
-- SupplierProfileCard has framer-motion dependency conflict
-- Temporary fix: component disabled to unblock builds
+- AIVisualShowcase.tsx is fully functional and accessible at `/ai-visual-showcase` route
+- SupplierProfileCard.tsx is a complete, working component (196 lines) with NO framer-motion dependencies
+- Temporary workaround: SupplierProfileCard import is commented out in AIVisualShowcase (line 9)
+- Placeholder message displayed instead of actual supplier profile cards (lines 207-215)
+- Component uses only standard CSS transitions (hover:-translate-y-1) without animation libraries
 
-#### Decision Framework
+#### Updated Assessment Based on Code Review
 
-1. **Usage Assessment**
-   - Determine if AIVisualShowcase is referenced in active routes
-   - Check if feature is documented in product roadmap
-   - Verify business value and user-facing impact
+**Critical Finding**: The SupplierProfileCard component has NO framer-motion dependency. The original build error assumption was incorrect.
 
-2. **Repair vs. Remove Decision Matrix**
+**Component Analysis**:
+- SupplierProfileCard.tsx uses only standard CSS transitions and Tailwind utilities
+- No import of framer-motion or animation libraries
+- Hover effects achieved via `hover:-translate-y-1 transition-transform duration-300`
+- Component is production-ready and functional
 
-| Condition | Action | Rationale |
-|-----------|--------|-----------|
-| Component is in active navigation/routing | Repair | User-facing feature requiring restoration |
-| Component is in feature roadmap | Repair | Planned functionality requiring completion |
-| Component is experimental/unused | Remove | Reduces maintenance burden |
-| Repair effort exceeds feature value | Remove | Resource optimization |
+**Route Status**:
+- AIVisualShowcase route is ACTIVE in App.tsx (line 116 lazy import, line 204 route definition)
+- Page is accessible and demonstrates 4 of 5 planned components
+- Documented in PHASE1_COMPLETION_SUMMARY.md as completed feature
 
-3. **Repair Approach** (if component is retained)
+#### Recommended Action: RESTORE Component
 
-   **Option A: Fix framer-motion integration**
-   - Investigate specific framer-motion version compatibility
-   - Review SupplierProfileCard animation implementation
-   - Test alternative animation approaches if necessary
-   - Ensure all framer-motion variants are properly typed
+Given the findings, the recommended action is to restore SupplierProfileCard integration:
 
-   **Option B: Refactor without animations**
-   - Remove framer-motion dependency from SupplierProfileCard
-   - Implement CSS-based animations as alternative
-   - Maintain visual functionality without heavy animation library
+**Rationale**:
+1. Component is complete and has no problematic dependencies
+2. Route is active and documented as a feature showcase
+3. Zero repair effort required - simple uncomment of import
+4. Enhances showcase completeness (5/5 components vs 4/5)
+5. Provides value for transparency and supplier empowerment messaging
 
-4. **Removal Approach** (if component is deprecated)
+**Restoration Steps** (Minimal effort):
 
-   Files to remove:
-   - src/pages/AIVisualShowcase.tsx
-   - src/components/supplier/SupplierProfileCard.tsx (if only used here)
-   - Any related test files
-   - Route definitions referencing the component
+1. Uncomment line 9 in AIVisualShowcase.tsx:
+   ```typescript
+   import { SupplierProfileCard, SampleSupplierProfiles } from "@/components/supplier/SupplierProfileCard";
+   ```
 
-   Documentation updates:
-   - Remove from navigation documentation
-   - Update component inventory
-   - Note deprecation in changelog
+2. Replace placeholder section (lines 206-216) with actual component usage:
+   ```typescript
+   <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+     {SampleSupplierProfiles.map((supplier) => (
+       <SupplierProfileCard
+         key={supplier.id}
+         supplier={supplier}
+         showImpactMetrics={true}
+         showBeforeAfter={false}
+       />
+     ))}
+   </div>
+   ```
+
+3. Test build to confirm no errors
+4. Verify responsive layout and interaction
+
+**Alternative: Remove If Not Business Priority**
+
+If supplier profile feature is not aligned with current business priorities:
+
+1. Keep SupplierProfileCard component (may be useful elsewhere)
+2. Remove or simplify supplier section in AIVisualShowcase
+3. Update documentation to reflect 4-component showcase
+4. Consider moving component to /examples or /archived directories
+
+**Decision Required**: Stakeholder input needed on whether supplier transparency feature should be activated or deferred.
 
 ## Implementation Sequence
 
@@ -411,7 +625,8 @@ Current State:
 | Phase 4: .gitignore Enhancement | 30 minutes | Low | Phase 2 completion |
 | Phase 5: Environment Template | 1 hour | Low | Phase 3 completion |
 | Phase 6: Dependency Audit | 3-4 hours | Medium | Phase 3 completion |
-| Phase 7: Component Cleanup | 1-3 hours | Medium | Business decision on component fate |
+| Phase 7: Environment Variable Validation | 2-3 hours | Medium | Code audit, type safety verification |
+| Phase 8: Component Cleanup | 1-3 hours | Medium | Business decision on component fate |
 
 ### Rollback Strategy
 
