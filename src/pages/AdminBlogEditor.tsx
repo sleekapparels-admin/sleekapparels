@@ -47,6 +47,8 @@ const AdminBlogEditor = () => {
   }, [id, isAdmin]);
 
   const fetchPost = async () => {
+    if (!id) return;
+    
     try {
       setLoading(true);
       const { data, error } = await supabase

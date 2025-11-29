@@ -72,7 +72,7 @@ export const useUserProfile = () => {
     const fetchRole = async () => {
       if (user) {
         const { data } = await firestoreService.getById('user_roles', user.uid);
-        setUserRole(data?.role || null);
+        setUserRole((data as { role?: string })?.role || null);
       } else {
         setUserRole(null);
       }

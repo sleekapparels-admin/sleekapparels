@@ -41,6 +41,8 @@ const BlogPost = () => {
   }, [slug]);
 
   const fetchPost = async () => {
+    if (!slug) return;
+    
     try {
       const { data, error } = await supabase
         .from("blog_posts")
@@ -51,7 +53,14 @@ const BlogPost = () => {
 
       if (error) throw error;
       
-      setPost(data);
+      if (data) {
+        setPost({
+          ...data,
+          published_at: data.published_at ?? data.created_at,
+          views_count: data.views_count ?? 0,
+          shares_count: data.shares_count ?? 0
+        });
+      }
 
       // Increment view count
       if (data?.id) {
