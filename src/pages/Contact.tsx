@@ -316,7 +316,10 @@ const Contact = () => {
                         onChange={(e) => setNotes(e.target.value)}
                       />
                       {errors.notes && <p className="text-sm text-destructive">{errors.notes}</p>}
-                      <SmartReplyButtons onSelect={handleSmartReplySelect} />
+                      <SmartReplyButtons onSelect={(reply) => {
+                        const text = typeof reply === 'string' ? reply : reply.text;
+                        handleSmartReplySelect(text);
+                      }} />
                     </div>
 
                     <div className="space-y-2">

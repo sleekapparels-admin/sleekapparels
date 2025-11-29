@@ -89,7 +89,13 @@ export const SupplierCoordinationPanel = ({ orderId, supplierId }: SupplierCoord
         .eq('order_id', orderId)
         .order('created_at', { ascending: true });
       
-      if (messagesData) setMessages(messagesData);
+      if (messagesData) {
+        setMessages(messagesData.map(m => ({
+          ...m,
+          created_at: m.created_at ?? new Date().toISOString(),
+          attachments: m.attachments ?? []
+        })));
+      }
     } catch (error) {
       console.error('Error fetching data:', error);
     }

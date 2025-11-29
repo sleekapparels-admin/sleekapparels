@@ -153,8 +153,8 @@ const DesignStudio = () => {
                       <GarmentPreview
                         garmentType={selectedGarment.type}
                         baseColor={baseColor}
-                        designImage={designImage}
-                        textOverlay={textOverlay}
+                        designImage={designImage ?? undefined}
+                        textOverlay={textOverlay ?? undefined}
                       />
                     </Suspense>
 

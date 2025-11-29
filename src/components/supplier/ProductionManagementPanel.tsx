@@ -69,6 +69,8 @@ export const ProductionManagementPanel = ({ supplierId }: { supplierId: string }
       // Fetch order details separately
       const ordersWithDetails = await Promise.all(
         (supplierOrdersData || []).map(async (so) => {
+          if (!so.buyer_order_id) return null;
+          
           const { data: orderData } = await supabase
             .from('orders')
             .select('order_number')
@@ -88,9 +90,10 @@ export const ProductionManagementPanel = ({ supplierId }: { supplierId: string }
         })
       );
 
-      setOrders(ordersWithDetails as any);
-      if (ordersWithDetails.length > 0) {
-        setSelectedOrder(ordersWithDetails[0].id);
+      const validOrders = ordersWithDetails.filter(o => o !== null);
+      setOrders(validOrders as any);
+      if (validOrders.length > 0) {
+        setSelectedOrder(validOrders[0].id);
       }
     } catch (error: any) {
       toast.error(`Failed to load orders: ${error.message}`);
@@ -120,10 +123,24 @@ export const ProductionManagementPanel = ({ supplierId }: { supplierId: string }
             .select('*')
             .eq('supplier_order_id', supplierOrderId)
             .order('stage_number', { ascending: true });
-          setStages(newData || []);
+          setStages((newData || []).map(stage => ({
+            ...stage,
+            description: stage.description ?? '',
+            status: stage.status ?? 'pending',
+            completion_percentage: stage.completion_percentage ?? 0,
+            notes: stage.notes ?? '',
+            photos: stage.photos ?? []
+          })));
         }
       } else {
-        setStages(data);
+        setStages(data.map(stage => ({
+          ...stage,
+          description: stage.description ?? '',
+          status: stage.status ?? 'pending',
+          completion_percentage: stage.completion_percentage ?? 0,
+          notes: stage.notes ?? '',
+          photos: stage.photos ?? []
+        })));
       }
     } catch (error: any) {
       console.error('Error fetching stages:', error);
