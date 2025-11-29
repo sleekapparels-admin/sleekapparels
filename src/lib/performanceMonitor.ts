@@ -31,7 +31,7 @@ class PerformanceMonitor {
     // Largest Contentful Paint (LCP)
     this.observeMetric('largest-contentful-paint', (entry: any) => {
       this.metrics.lcp = (entry.renderTime || entry.loadTime) ?? 0;
-      this.reportMetric('LCP', this.metrics.lcp);
+      this.reportMetric('LCP', this.metrics.lcp ?? 0);
     });
 
     // First Input Delay (FID)
@@ -53,7 +53,7 @@ class PerformanceMonitor {
     this.observeMetric('paint', (entry: any) => {
       if (entry.name === 'first-contentful-paint') {
         this.metrics.fcp = entry.startTime ?? 0;
-        this.reportMetric('FCP', this.metrics.fcp);
+        this.reportMetric('FCP', this.metrics.fcp ?? 0);
       }
     });
 

@@ -264,7 +264,7 @@ export const CommunicationCenter = ({ orderFilter }: CommunicationCenterProps) =
   };
 
   const filteredMessages = messages.filter(msg =>
-    msg.subject.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    (msg.subject ?? '').toLowerCase().includes(searchQuery.toLowerCase()) ||
     msg.message.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
@@ -324,7 +324,7 @@ export const CommunicationCenter = ({ orderFilter }: CommunicationCenterProps) =
                     </div>
                     <div className="text-sm opacity-90 truncate">{message.message}</div>
                     <div className="text-xs opacity-75 mt-1">
-                      {format(new Date(message.created_at), 'MMM dd, yyyy')}
+                      {format(new Date(message.created_at ?? new Date()), 'MMM dd, yyyy')}
                     </div>
                   </button>
                 ))
@@ -340,7 +340,7 @@ export const CommunicationCenter = ({ orderFilter }: CommunicationCenterProps) =
               <CardHeader>
                 <CardTitle>{selectedMessage.subject || 'No Subject'}</CardTitle>
                 <p className="text-sm text-muted-foreground">
-                  {format(new Date(selectedMessage.created_at), 'MMM dd, yyyy • h:mm a')}
+                  {format(new Date(selectedMessage.created_at ?? new Date()), 'MMM dd, yyyy • h:mm a')}
                 </p>
               </CardHeader>
               <CardContent>

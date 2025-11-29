@@ -115,11 +115,11 @@ export default function ModernSupplierDashboard() {
   }, [supplier]);
 
   // Calculate real stats
-  const activeOrders = orders.filter(o => 
+  const activeOrders = (orders ?? []).filter(o => 
     o.status !== 'completed' && o.status !== 'cancelled' && o.status !== 'rejected'
   ).length;
   
-  const monthlyRevenue = orders
+  const monthlyRevenue = (orders ?? [])
     .filter(o => {
       const orderDate = new Date(o.created_at || '');
       const now = new Date();
@@ -135,7 +135,7 @@ export default function ModernSupplierDashboard() {
   const avgRating = (supplier as any)?.supplier_ratings?.[0]?.overall_score || 0;
 
   // Calculate performance score
-  const completedOrders = orders.filter(o => o.status === 'completed');
+  const completedOrders = (orders ?? []).filter(o => o.status === 'completed');
   const onTimeOrders = completedOrders.filter(o => {
     // This would need actual delivery tracking data
     return true; // Placeholder
@@ -165,7 +165,7 @@ export default function ModernSupplierDashboard() {
   };
 
   // Extract urgent actions from real data
-  const urgentActions = orders
+  const urgentActions = (orders ?? [])
     .filter(o => o.status === 'quality_check' || o.status === 'awaiting_approval')
     .slice(0, 3)
     .map(order => ({

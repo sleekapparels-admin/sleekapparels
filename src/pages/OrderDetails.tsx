@@ -71,6 +71,8 @@ export default function OrderDetails() {
   };
 
   const fetchOrderDetails = async () => {
+    if (!orderId) return;
+    
     try {
       const { data, error } = await supabase
         .from("orders")
@@ -88,7 +90,7 @@ export default function OrderDetails() {
         .single();
 
       // Fetch factory profile if assigned
-      let factoryProfile = null;
+      let factoryProfile: { full_name: string | null; company_name: string | null } | null = null;
       if (data.factory_id) {
         const { data: factory } = await supabase
           .from("profiles")
@@ -219,7 +221,10 @@ export default function OrderDetails() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 space-y-6">
             <AIInsightsCard 
-              orderData={order}
+              orderData={{
+                ...order,
+                notes: order.notes ?? undefined
+              }}
               updates={updates || []}
               qcChecks={qcChecks || []}
             />

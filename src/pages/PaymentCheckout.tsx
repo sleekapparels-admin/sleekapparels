@@ -29,6 +29,8 @@ export default function PaymentCheckout() {
   }, [orderId, paymentType]);
 
   const fetchOrderAndCreatePaymentIntent = async () => {
+    if (!orderId) return;
+    
     try {
       setLoading(true);
 

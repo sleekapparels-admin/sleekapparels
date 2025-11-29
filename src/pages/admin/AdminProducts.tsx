@@ -202,7 +202,7 @@ export default function AdminProducts() {
         uploadedUrl = publicUrl.publicUrl;
       }
 
-      const productData = {
+      const productData: any = {
         title: formData.title,
         category: formData.category,
         subcategory: formData.subcategory || null,
@@ -210,12 +210,13 @@ export default function AdminProducts() {
         yarn: formData.yarn || null,
         colors: formData.colors ? formData.colors.split(",").map(c => c.trim()) : null,
         description: formData.description || null,
-        ...(uploadedUrl && { 
-          image_url: uploadedUrl,
-          ai_generated_image: false,
-          image_approved_by_admin: true
-        })
       };
+      
+      if (uploadedUrl) {
+        productData.image_url = uploadedUrl;
+        productData.ai_generated_image = false;
+        productData.image_approved_by_admin = true;
+      }
 
       if (editingProduct) {
         const { error } = await supabase

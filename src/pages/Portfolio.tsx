@@ -53,7 +53,10 @@ const Portfolio = () => {
         .order("created_at", { ascending: false });
 
       if (error) throw error;
-      setProducts(data || []);
+      setProducts((data || []).map(product => ({
+        ...product,
+        featured: product.featured ?? false
+      })));
     } catch (error) {
       console.error("Error fetching products:", error);
     } finally {

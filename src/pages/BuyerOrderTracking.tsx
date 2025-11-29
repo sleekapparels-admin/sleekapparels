@@ -25,6 +25,8 @@ export default function BuyerOrderTracking() {
   }, [orderId]);
 
   const fetchOrderDetails = async () => {
+    if (!orderId) return;
+    
     try {
       const { data: orderData, error } = await supabase
         .from('orders')

@@ -62,7 +62,13 @@ export default function OrderManagement() {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setOrders(data || []);
+      setOrders((data || []).map(order => ({
+        ...order,
+        workflow_status: order.workflow_status ?? 'pending',
+        buyer_price: order.buyer_price ?? 0,
+        supplier_price: order.supplier_price ?? 0,
+        admin_margin: order.admin_margin ?? 0
+      })));
     } catch (error) {
       console.error('Error fetching orders:', error);
       toast({

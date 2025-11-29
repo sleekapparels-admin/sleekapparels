@@ -305,7 +305,7 @@ const AdminLeads = () => {
                           </TableCell>
                           <TableCell>
                             <div className="flex gap-2">
-                              <LeadFollowupEmailDialog quoteId={lead.id} customerName={lead.customer_name} />
+                              <LeadFollowupEmailDialog quoteId={lead.id} customerName={lead.customer_name ?? 'Customer'} />
                               {lead.status !== "converted" && (
                                 <Button
                                   size="sm"

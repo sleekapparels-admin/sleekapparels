@@ -26,6 +26,8 @@ export default function SupplierOrderDetail() {
   }, [orderId]);
 
   const fetchOrderDetails = async () => {
+    if (!orderId) return;
+    
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {

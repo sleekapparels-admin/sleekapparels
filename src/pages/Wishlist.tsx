@@ -184,7 +184,10 @@ const Wishlist = () => {
               {wishlistItems.map(item => (
                 <ProductCard 
                   key={item.id} 
-                  product={item.products} 
+                  product={{
+                    ...item.products,
+                    featured: item.products.featured ?? undefined
+                  }}
                   variant="grid"
                 />
               ))}

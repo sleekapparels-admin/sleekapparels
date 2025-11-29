@@ -28,6 +28,8 @@ export default function AdminSupplierOrderDetail() {
   }, [orderId]);
 
   const fetchOrderDetails = async () => {
+    if (!orderId) return;
+    
     try {
       const { data: orderData, error: orderError } = await supabase
         .from("supplier_orders")

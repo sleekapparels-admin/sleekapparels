@@ -55,7 +55,9 @@ export default function QuoteAnalytics() {
   // Calculate metrics
   const totalQuotes = quotes?.length || 0;
   const totalApiCost = usageLogs?.reduce((sum, log) => sum + (log.estimated_cost || 0), 0) || 0;
-  const avgConfidence = quotes?.reduce((sum, q) => sum + (q.confidence_score || 0), 0) / (totalQuotes || 1);
+  const avgConfidence = totalQuotes > 0 
+    ? (quotes?.reduce((sum, q) => sum + (q.confidence_score || 0), 0) ?? 0) / totalQuotes 
+    : 0;
   const cacheHitRate = cachedResearch?.length || 0;
 
   // Quotes by status
