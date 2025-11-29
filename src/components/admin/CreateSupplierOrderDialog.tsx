@@ -14,8 +14,8 @@ interface CreateSupplierOrderDialogProps {
   onOpenChange: (open: boolean) => void;
   onSuccess: () => void;
   prefilledData?: {
-    buyerEmail?: string;
-    buyerName?: string;
+    buyerEmail?: string | null;
+    buyerName?: string | null;
     productType?: string;
     quantity?: number;
   };

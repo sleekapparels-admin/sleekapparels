@@ -53,8 +53,8 @@ export const debugBlogDataFetching = async (): Promise<BlogDebugInfo> => {
   try {
     // 1. Check Supabase configuration
     console.log('🔍 Step 1: Checking Supabase configuration...');
-    debugInfo.supabaseConfig.url = import.meta.env.VITE_SUPABASE_URL || '';
-    debugInfo.supabaseConfig.hasAnonKey = !!import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+    debugInfo.supabaseConfig.url = (import.meta as any).env?.VITE_SUPABASE_URL || '';
+    debugInfo.supabaseConfig.hasAnonKey = !!(import.meta as any).env?.VITE_SUPABASE_PUBLISHABLE_KEY;
     
     console.log('  ✓ Supabase URL:', debugInfo.supabaseConfig.url);
     console.log('  ✓ Has Anon Key:', debugInfo.supabaseConfig.hasAnonKey);

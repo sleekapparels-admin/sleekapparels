@@ -64,6 +64,7 @@ export default function OrderManagement() {
       if (error) throw error;
       setOrders((data || []).map(order => ({
         ...order,
+        created_at: order.created_at ?? new Date().toISOString(),
         workflow_status: order.workflow_status ?? 'pending',
         buyer_price: order.buyer_price ?? 0,
         supplier_price: order.supplier_price ?? 0,

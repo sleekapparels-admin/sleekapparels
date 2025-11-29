@@ -69,17 +69,22 @@ export const useOrderManagement = () => {
       );
 
       // Create supplier order
+      const { data: currentUser } = await supabase.auth.getUser();
+      const orderNumber = `SO-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+      
       const { error: supplierOrderError } = await supabase
         .from('supplier_orders')
         .insert({
           buyer_order_id: orderId,
+          order_number: orderNumber,
           product_type: order.product_type,
           quantity: order.quantity,
+          supplier_id: supplierId,
           supplier_price: supplierPrice,
           target_date: order.target_date,
           special_instructions: instructions,
           status: 'pending',
-          created_by: (await supabase.auth.getUser()).data.user?.id,
+          created_by: currentUser.user?.id || '',
         });
 
       if (supplierOrderError) throw supplierOrderError;

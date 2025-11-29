@@ -59,7 +59,7 @@ export async function trackDatabaseEvent(event: DatabaseAnalyticsEvent): Promise
     }
 
     // Also log to console in development
-    if (import.meta.env.DEV) {
+    if ((import.meta as any).env?.DEV) {
       console.log('📊 Database Analytics Event:', event.event_name, event.event_properties);
     }
   } catch (err) {

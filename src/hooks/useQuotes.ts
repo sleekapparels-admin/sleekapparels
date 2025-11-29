@@ -4,34 +4,34 @@ import { toast } from "sonner";
 
 export interface Quote {
   id: string;
-  buyer_id?: string;
-  session_id?: string;
+  buyer_id?: string | null;
+  session_id?: string | null;
   product_type: string;
   quantity: number;
-  target_moq?: number;
-  complexity_level?: string;
-  fabric_type?: string;
-  customization_details?: string;
-  additional_requirements?: string;
-  tech_pack_urls?: string[];
-  reference_image_urls?: string[];
-  target_price_per_unit?: number;
-  target_delivery_date?: string;
-  matched_supplier_ids?: string[];
+  target_moq?: number | null;
+  complexity_level?: string | null;
+  fabric_type?: string | null;
+  customization_details?: string | null;
+  additional_requirements?: string | null;
+  tech_pack_urls?: string[] | null;
+  reference_image_urls?: string[] | null;
+  target_price_per_unit?: number | null;
+  target_delivery_date?: string | null;
+  matched_supplier_ids?: string[] | null;
   status: string;
   ai_estimation?: any;
-  customer_name?: string;
-  customer_email?: string;
-  customer_phone?: string;
+  customer_name?: string | null;
+  customer_email?: string | null;
+  customer_phone?: string | null;
   created_at: string;
   updated_at: string;
   // Specialty sourcing fields
-  specialty_sourcing_required?: boolean;
-  production_route?: 'bangladesh_only' | 'hybrid' | 'specialty_only';
-  specialty_notes?: string;
-  bangladesh_cost?: number;
-  specialty_cost?: number;
-  admin_markup?: number;
+  specialty_sourcing_required?: boolean | null;
+  production_route?: 'bangladesh_only' | 'hybrid' | 'specialty_only' | null;
+  specialty_notes?: string | null;
+  bangladesh_cost?: number | null;
+  specialty_cost?: number | null;
+  admin_markup?: number | null;
 }
 
 export interface SupplierQuote {
