@@ -139,7 +139,7 @@ export const CMSManagementPanel = () => {
                       <Button
                         size="sm"
                         variant="outline"
-                        onClick={() => toggleActive(content.id, content.active)}
+                        onClick={() => toggleActive(content.id, content.active ?? false)}
                       >
                         {content.active ? 'Deactivate' : 'Activate'}
                       </Button>

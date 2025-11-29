@@ -24,7 +24,15 @@ export const SmartRecommendations = ({
   timeline,
   onRecalculate
 }: SmartRecommendationsProps) => {
-  const recommendations = [];
+  const recommendations: Array<{
+    icon: React.ComponentType<any>;
+    title: string;
+    description: string;
+    savings: string;
+    action: string;
+    variant: "default" | "outline" | "secondary";
+    onClick: () => void;
+  }> = [];
 
   // Volume Discount Opportunity
   if (quantity < 200) {
