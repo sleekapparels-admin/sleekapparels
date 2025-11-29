@@ -4051,7 +4051,6 @@ export type Database = {
         }
         Returns: string
       }
-      refresh_product_engagement_metrics: { Args: never; Returns: undefined }
       remove_user_role: {
         Args: {
           target_role: Database["public"]["Enums"]["app_role"]
