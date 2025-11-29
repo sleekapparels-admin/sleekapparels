@@ -2,27 +2,22 @@
 
 <cite>
 **Referenced Files in This Document**
-- [src/types/database.ts](file://src/types/database.ts)
-- [supabase/migrations/20251115150759_remix_migration_from_pg_dump.sql](file://supabase/migrations/20251115150759_remix_migration_from_pg_dump.sql)
-- [supabase/migrations/20250122000000_create_marketplace_system.sql](file://supabase/migrations/20250122000000_create_marketplace_system.sql)
-- [src/lib/supabaseHelpers.ts](file://src/lib/supabaseHelpers.ts)
-- [src/integrations/supabase/client.ts](file://src/integrations/supabase/client.ts)
-- [src/types/README.md](file://src/types/README.md)
-- [env.d.ts](file://env.d.ts) - *Added for environment variable type safety*
-- [supabase/functions/deno.d.ts](file://supabase/functions/deno.d.ts) - *Added for Deno runtime type definitions*
-- [tsconfig.json](file://tsconfig.json) - *Updated with strict mode enabled*
-- [supabase/functions/tsconfig.json](file://supabase/functions/tsconfig.json) - *Updated for Deno function configuration*
-- [src/lib/env-validator.ts](file://src/lib/env-validator.ts) - *Environment validation implementation*
+- [src/types/database.ts](file://src\types\database.ts)
+- [supabase/migrations/20251128220157_remix_migration_from_pg_dump.sql](file://supabase\migrations\20251128220157_remix_migration_from_pg_dump.sql)
+- [src/lib/supabaseHelpers.ts](file://src\lib\supabaseHelpers.ts)
+- [src/integrations/supabase/client.ts](file://src\integrations\supabase\client.ts)
+- [src/types/README.md](file://src\types\README.md)
+- [src/vite-env.d.ts](file://src\vite-env.d.ts) - *Updated environment variable type declarations*
+- [src/lib/env-validator.ts](file://src\lib\env-validator.ts) - *Environment validation implementation*
 </cite>
 
 ## Update Summary
 **Changes Made**
-- Added new section on Environment Variable Type Safety with `env.d.ts`
-- Added new section on Deno Runtime Type Safety with `deno.d.ts`
-- Updated Introduction to reflect strict TypeScript configuration
-- Enhanced Best Practices with strict mode recommendations
-- Added configuration details for `tsconfig.json` updates
-- Updated document sources to include new and modified files
+- Updated Environment Variable Type Safety section to reflect the proper augmentation of ImportMeta interface with ImportMetaEnv
+- Added detailed explanation of the updated type declarations in src/vite-env.d.ts
+- Enhanced code examples to show the correct type-safe access pattern
+- Updated document sources to include the modified src/vite-env.d.ts file
+- Removed redundant env.d.ts reference as it has been consolidated into vite-env.d.ts
 
 ## Table of Contents
 1. [Introduction](#introduction)
@@ -32,9 +27,8 @@
 5. [Relationship Between Database Constraints and TypeScript Types](#relationship-between-database-constraints-and-typescript-types)
 6. [Practical Usage Examples](#practical-usage-examples)
 7. [Environment Variable Type Safety](#environment-variable-type-safety)
-8. [Deno Runtime Type Safety](#deno-runtime-type-safety)
-9. [Best Practices](#best-practices)
-10. [Conclusion](#conclusion)
+8. [Best Practices](#best-practices)
+9. [Conclusion](#conclusion)
 
 ## Introduction
 
@@ -42,13 +36,12 @@ The sleekapp-v100 database employs a comprehensive system of enumerated types an
 
 The system leverages Supabase's type generation capabilities while maintaining explicit TypeScript interfaces to provide robust type safety for database operations. This approach ensures that business logic constraints are enforced both at the database level and in the frontend application.
 
-Recent updates have significantly enhanced the type safety of the system by enabling strict mode in `tsconfig.json` and introducing dedicated type definition files for environment variables and Deno runtime functions. These changes provide compile-time validation for environment configuration and serverless function execution contexts.
+Recent updates have significantly enhanced the type safety of the system by properly augmenting the ImportMeta interface with ImportMetaEnv in the src/vite-env.d.ts file. This change resolves TS2339 errors and eliminates redundant type definitions while maintaining type safety for Vite's environment injection system.
 
 **Section sources**
+- [src/vite-env.d.ts](file://src\vite-env.d.ts) - *Updated environment variable type declarations*
 - [tsconfig.json](file://tsconfig.json) - *Updated with strict mode enabled*
 - [tsconfig.app.json](file://tsconfig.app.json) - *Application configuration*
-- [tsconfig.node.json](file://tsconfig.node.json) - *Node configuration*
-- [tsconfig.test.json](file://tsconfig.test.json) - *Test configuration*
 
 ## Database Enum Types
 
@@ -79,7 +72,7 @@ I --> Q[Product Suppliers]
 ```
 
 **Diagram sources**
-- [supabase/migrations/20251115150759_remix_migration_from_pg_dump.sql](file://supabase/migrations/20251115150759_remix_migration_from_pg_dump.sql#L28-L40)
+- [supabase/migrations/20251128220157_remix_migration_from_pg_dump.sql](file://supabase\migrations\20251128220157_remix_migration_from_pg_dump.sql#L28-L40)
 
 ### Order Workflow Status
 
@@ -114,7 +107,7 @@ on_hold --> admin_review
 ```
 
 **Diagram sources**
-- [supabase/migrations/20251115150759_remix_migration_from_pg_dump.sql](file://supabase/migrations/20251115150759_remix_migration_from_pg_dump.sql#L47-L65)
+- [supabase/migrations/20251128220157_remix_migration_from_pg_dump.sql](file://supabase\migrations\20251128220157_remix_migration_from_pg_dump.sql#L47-L65)
 
 ### Production Stage Tracking
 
@@ -133,7 +126,7 @@ style G fill:#c8e6c9
 ```
 
 **Diagram sources**
-- [supabase/migrations/20251115150759_remix_migration_from_pg_dump.sql](file://supabase/migrations/20251115150759_remix_migration_from_pg_dump.sql#L72-L80)
+- [supabase/migrations/20251128220157_remix_migration_from_pg_dump.sql](file://supabase\migrations\20251128220157_remix_migration_from_pg_dump.sql#L72-L80)
 
 ### Supplier Verification Status
 
@@ -150,7 +143,7 @@ D --> G[Suspended Supplier]
 ```
 
 **Diagram sources**
-- [supabase/migrations/20251115150759_remix_migration_from_pg_dump.sql](file://supabase/migrations/20251115150759_remix_migration_from_pg_dump.sql#L98-L103)
+- [supabase/migrations/20251128220157_remix_migration_from_pg_dump.sql](file://supabase\migrations\20251128220157_remix_migration_from_pg_dump.sql#L98-L103)
 
 ### Additional Enum Types
 
@@ -164,8 +157,7 @@ The system also includes specialized enums for business operations:
 | `supplier_tier` | bronze, silver, gold | Supplier quality classification |
 
 **Section sources**
-- [supabase/migrations/20251115150759_remix_migration_from_pg_dump.sql](file://supabase/migrations/20251115150759_remix_migration_from_pg_dump.sql#L28-L103)
-- [supabase/migrations/20250122000000_create_marketplace_system.sql](file://supabase/migrations/20250122000000_create_marketplace_system.sql#L20-L36)
+- [supabase/migrations/20251128220157_remix_migration_from_pg_dump.sql](file://supabase\migrations\20251128220157_remix_migration_from_pg_dump.sql#L28-L103)
 
 ## TypeScript Enum Mappings
 
@@ -217,12 +209,8 @@ export type ProductionStage =
 
 This enumeration ensures that production updates correspond to valid manufacturing stages, maintaining process integrity.
 
-### Utility Type Definitions
-
-The system includes sophisticated utility types that enhance type safety for database operations:
-
 **Section sources**
-- [src/types/database.ts](file://src/types/database.ts#L5-L31)
+- [src/types/database.ts](file://src\types\database.ts#L5-L31)
 
 ## Utility Types for Type Safety
 
@@ -274,7 +262,7 @@ export interface OrderWithRelations extends Order {
 These relationship types enable efficient data fetching with nested associations, reducing the need for multiple queries.
 
 **Section sources**
-- [src/types/database.ts](file://src/types/database.ts#L557-L579)
+- [src/types/database.ts](file://src\types\database.ts#L557-L579)
 
 ## Relationship Between Database Constraints and TypeScript Types
 
@@ -304,8 +292,7 @@ E --> P[Non-Null Values]
 ```
 
 **Diagram sources**
-- [supabase/migrations/20251115150759_remix_migration_from_pg_dump.sql](file://supabase/migrations/20251115150759_remix_migration_from_pg_dump.sql#L47-L65)
-- [supabase/migrations/20250122000000_create_marketplace_system.sql](file://supabase/migrations/20250122000000_create_marketplace_system.sql#L115-L118)
+- [supabase/migrations/20251128220157_remix_migration_from_pg_dump.sql](file://supabase\migrations\20251128220157_remix_migration_from_pg_dump.sql#L47-L65)
 
 ### Frontend Type Reflection
 
@@ -339,7 +326,7 @@ TS-->>Dev : Type-safe result
 ```
 
 **Section sources**
-- [src/lib/supabaseHelpers.ts](file://src/lib/supabaseHelpers.ts#L1-L376)
+- [src/lib/supabaseHelpers.ts](file://src\lib\supabaseHelpers.ts#L1-L376)
 
 ## Practical Usage Examples
 
@@ -425,33 +412,44 @@ updateOrderStatus({
 ```
 
 **Section sources**
-- [src/lib/supabaseHelpers.ts](file://src/lib/supabaseHelpers.ts#L141-L148)
-- [src/hooks/queries/useOrders.ts](file://src/hooks/queries/useOrders.ts#L110-L151)
+- [src/lib/supabaseHelpers.ts](file://src\lib\supabaseHelpers.ts#L141-L148)
+- [src/hooks/queries/useOrders.ts](file://src\hooks\queries\useOrders.ts#L110-L151)
 
 ## Environment Variable Type Safety
 
-The introduction of `env.d.ts` provides comprehensive type safety for environment variables, ensuring that all required configuration is properly defined and validated at compile time.
+The updated `src/vite-env.d.ts` file properly augments the ImportMeta interface with ImportMetaEnv, resolving TS2339 errors and eliminating redundant type definitions while maintaining type safety for Vite's environment injection system.
 
-### env.d.ts Implementation
+### Updated vite-env.d.ts Implementation
 
-The `env.d.ts` file defines the expected environment variables with proper typing:
+The updated type declaration file defines the expected environment variables with proper typing:
 
 ```typescript
 /// <reference types="vite/client" />
 
-interface ImportMetaEnv {
-  readonly VITE_SUPABASE_URL: string
-  readonly VITE_SUPABASE_PUBLISHABLE_KEY: string
-  readonly VITE_SUPABASE_PROJECT_ID: string
-  readonly VITE_STRIPE_PUBLISHABLE_KEY: string
+declare global {
+  interface ImportMetaEnv {
+    readonly VITE_SUPABASE_URL: string
+    readonly VITE_SUPABASE_PUBLISHABLE_KEY: string
+    readonly VITE_SUPABASE_PROJECT_ID: string
+    readonly VITE_STRIPE_PUBLISHABLE_KEY: string
+  }
+
+  interface ImportMeta {
+    readonly env: ImportMetaEnv
+  }
 }
 
-interface ImportMeta {
-  readonly env: ImportMetaEnv
-}
+export {}
 ```
 
-This declaration file enables TypeScript to validate environment variable access throughout the application, preventing runtime errors from misspelled or undefined variables.
+This declaration properly augments the global scope with the ImportMeta interface and ImportMetaEnv type, ensuring that all environment variables are type-safe and accessible throughout the application without requiring redundant type definitions.
+
+The key improvements in this update include:
+
+1. **Proper Interface Augmentation**: The ImportMeta interface is correctly extended with the env property of type ImportMetaEnv
+2. **Global Declaration**: The interfaces are declared in the global scope, making them available throughout the application
+3. **Type Safety**: All environment variables are strongly typed, preventing runtime errors from misspelled or undefined variables
+4. **Elimination of Redundancy**: Removes the need for separate env.d.ts files by consolidating type declarations
 
 ### Environment Validation
 
@@ -482,87 +480,30 @@ class EnvironmentValidator {
 
 This validation ensures that critical configuration is present and correctly formatted before the application starts.
 
-**Section sources**
-- [env.d.ts](file://env.d.ts) - *Environment variable type definitions*
-- [src/lib/env-validator.ts](file://src/lib/env-validator.ts) - *Validation implementation*
-- [src/vite-env.d.ts](file://src/vite-env.d.ts) - *Alternative environment typing*
+### Usage in Application Code
 
-## Deno Runtime Type Safety
-
-The `supabase/functions/deno.d.ts` file provides type safety for Supabase Edge Functions running on the Deno runtime, ensuring proper type checking for serverless functions.
-
-### deno.d.ts Implementation
-
-The type declaration file defines the Deno-specific global objects and module interfaces:
+The properly typed environment variables are used throughout the application:
 
 ```typescript
-// Deno global type declarations for Supabase Edge Functions
-declare namespace _Deno {
-  export const env: {
-    get(key: string): string | undefined;
-    toObject(): Record<string, string>;
-  };
+// In src/integrations/supabase/client.ts
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
+const SUPABASE_PUBLISHABLE_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
 
-  export interface ConnInfo {
-    readonly remoteAddr: {
-      transport: "tcp" | "udp";
-      hostname: string;
-      port: number;
-    };
+export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
+  auth: {
+    storage: localStorage,
+    persistSession: true,
+    autoRefreshToken: true,
   }
-}
-
-// Deno standard library types
-declare module "https://deno.land/std@*/http/server.ts" {
-  export function serve(
-    handler: (request: Request) => Response | Promise<Response>,
-    options?: {
-      port?: number;
-      hostname?: string;
-      signal?: AbortSignal;
-      onError?: (error: unknown) => Response | Promise<Response>;
-      onListen?: (params: { hostname: string; port: number }) => void;
-    }
-  ): void;
-}
-
-// Simplified Supabase types
-declare module "https://esm.sh/@supabase/supabase-js@*";
+});
 ```
 
-### Configuration in tsconfig.json
-
-The Deno function configuration is specified in the dedicated tsconfig:
-
-```json
-{
-  "compilerOptions": {
-    "target": "ES2021",
-    "lib": ["ES2021", "DOM"],
-    "module": "ESNext",
-    "moduleResolution": "bundler",
-    "strict": true,
-    "skipLibCheck": true,
-    "noEmit": true,
-    "allowJs": true,
-    "forceConsistentCasingInFileNames": true,
-    "types": ["@types/node"],
-    "paths": {
-      "https://deno.land/*": ["./deno.d.ts"],
-      "https://esm.sh/*": ["../node_modules/@supabase/supabase-js/dist/module/index.d.ts"]
-    }
-  },
-  "include": ["**/*.ts"],
-  "exclude": ["node_modules"]
-}
-```
-
-This configuration enables proper type checking for Deno runtime functions while maintaining compatibility with the broader TypeScript ecosystem.
+The updated type declarations ensure that accessing `import.meta.env.VITE_SUPABASE_URL` is type-safe and will not produce TS2339 errors.
 
 **Section sources**
-- [supabase/functions/deno.d.ts](file://supabase/functions/deno.d.ts) - *Deno runtime type definitions*
-- [supabase/functions/tsconfig.json](file://supabase/functions/tsconfig.json) - *Deno function configuration*
-- [supabase/functions/index.ts](file://supabase/functions/index.ts) - *Example function implementation*
+- [src/vite-env.d.ts](file://src\vite-env.d.ts) - *Updated environment variable type declarations*
+- [src/lib/env-validator.ts](file://src\lib\env-validator.ts) - *Validation implementation*
+- [src/integrations/supabase/client.ts](file://src\integrations\supabase\client.ts) - *Usage of environment variables*
 
 ## Best Practices
 
@@ -573,7 +514,7 @@ This configuration enables proper type checking for Deno runtime functions while
 3. **Enable Strict Mode**: Configure TypeScript with strict type checking enabled as in `tsconfig.json`
 4. **Validate at Multiple Layers**: Combine database constraints with TypeScript validation
 5. **Use Environment Validation**: Always validate environment variables before use
-6. **Maintain Type Definitions**: Keep `env.d.ts` and `deno.d.ts` updated with current requirements
+6. **Maintain Type Definitions**: Keep `vite-env.d.ts` updated with current requirements
 
 ### Performance Considerations
 
@@ -621,9 +562,9 @@ describe('Order Status Updates', () => {
 ```
 
 **Section sources**
-- [src/types/README.md](file://src/types/README.md#L192-L239)
+- [src/types/README.md](file://src\types\README.md#L192-L239)
 - [tsconfig.json](file://tsconfig.json) - *Strict mode configuration*
-- [env.d.ts](file://env.d.ts) - *Environment typing best practices*
+- [src/vite-env.d.ts](file://src\vite-env.d.ts) - *Environment typing best practices*
 
 ## Conclusion
 
@@ -631,7 +572,7 @@ The sleekapp-v100 database employs a sophisticated system of enumerated types an
 
 The utility types (`InsertData<T>` and `UpdateData<T>`) offer powerful abstractions that simplify database operations while maintaining strict type safety. The relationship interfaces enable efficient data modeling with nested associations, reducing query complexity and improving application performance.
 
-Recent enhancements have significantly strengthened the type safety of the system through the introduction of `env.d.ts` for environment variable typing, `deno.d.ts` for Deno runtime functions, and the enabling of strict mode in `tsconfig.json`. These additions provide compile-time validation for configuration and serverless function execution, preventing common deployment issues.
+Recent enhancements have significantly strengthened the type safety of the system by properly updating the environment variable type declarations in `src/vite-env.d.ts`. This change resolves TS2339 errors and eliminates redundant type definitions while maintaining type safety for Vite's environment injection system. The updated type declarations properly augment the ImportMeta interface with ImportMetaEnv, ensuring that all environment variables are type-safe and accessible throughout the application.
 
 This dual-layer approach—combining database constraints with TypeScript type definitions—creates a robust system that prevents data corruption while providing excellent developer experience. The extensive use of helper functions and validation utilities further enhances productivity by providing type-safe, pre-built solutions for common database operations.
 

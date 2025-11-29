@@ -14,7 +14,19 @@
 - [useAdminAuth.ts](file://src/hooks/useAdminAuth.ts)
 - [supabaseHelpers.ts](file://src/lib/supabaseHelpers.ts)
 - [package.json](file://package.json)
+- [index.html](file://index.html) - *Updated Supabase URL in CSP and DNS prefetch*
+- [vite.config.ts](file://vite.config.ts) - *Removed hardcoded Supabase URL and publishable key*
+- [performanceOptimizer.ts](file://src/lib/performanceOptimizer.ts) - *Updated DNS targets for Supabase*
 </cite>
+
+## Update Summary
+**Changes Made**
+- Updated Supabase project URL from `eqpftggctumujhutomom` to `iwypgbhschjncudhsayh` in all relevant configuration files
+- Removed hardcoded Supabase URL and publishable key from `vite.config.ts` as part of Firebase to Supabase migration
+- Updated Content Security Policy (CSP) directives in `index.html` to reflect new Supabase URL
+- Updated DNS prefetch and preconnect targets in `index.html` for performance optimization
+- Updated performance optimizer DNS targets to use new Supabase project URL
+- Removed obsolete project ID references from documentation diagrams and examples
 
 ## Table of Contents
 1. [Introduction](#introduction)
@@ -33,7 +45,7 @@
 
 The sleekapp-v100 application implements a comprehensive Supabase configuration that enables secure, real-time communication between the frontend React application and backend Edge Functions. This architecture leverages Supabase's built-in authentication, database, storage, and real-time capabilities while maintaining strict security controls through configurable JWT verification settings.
 
-The configuration follows a multi-layered approach where project-level settings define function-level security policies, frontend clients are initialized with validated environment variables, and backend functions implement granular access controls based on user roles and permissions.
+The configuration follows a multi-layered approach where project-level settings define function-level security policies, frontend clients are initialized with validated environment variables, and backend functions implement granular access controls based on user roles and permissions. Recent updates have migrated the application from Firebase to Supabase, resulting in changes to the Supabase project URL and configuration approach.
 
 ## Project-Level Configuration
 
@@ -45,7 +57,7 @@ The project-level configuration is managed through the `supabase/config.toml` fi
 graph TB
 subgraph "Project Configuration"
 ConfigToml["config.toml<br/>Project Metadata"]
-ProjectID["Project ID<br/>eqpftggctumujhutomom"]
+ProjectID["Project ID<br/>iwypgbhschjncudhsayh"]
 end
 subgraph "Function Security Policies"
 AdminCheck["admin-check<br/>verify_jwt = true"]

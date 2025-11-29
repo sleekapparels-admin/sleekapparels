@@ -3,15 +3,24 @@
 <cite>
 **Referenced Files in This Document**   
 - [vite.config.ts](file://vite.config.ts)
-- [env-validator.ts](file://src/lib/env-validator.ts)
-- [client.ts](file://src/integrations/supabase/client.ts)
-- [diagnostics.ts](file://src/lib/diagnostics.ts)
+- [env-validator.ts](file://src\lib\env-validator.ts)
+- [client.ts](file://src\integrations\supabase\client.ts)
+- [diagnostics.ts](file://src\lib\diagnostics.ts)
 - [netlify.toml](file://netlify.toml)
 - [vercel.json](file://vercel.json)
-- [setup-database.js](file://scripts/setup-database.js)
-- [stripe-webhook/index.ts](file://supabase/functions/stripe-webhook/index.ts)
-- [ai-quote-generator/index.ts](file://supabase/functions/ai-quote-generator/index.ts)
+- [setup-database.js](file://scripts\setup-database.js)
+- [stripe-webhook/index.ts](file://supabase\functions\stripe-webhook\index.ts)
+- [ai-quote-generator/index.ts](file://supabase\functions\ai-quote-generator\index.ts)
+- [vite-env.d.ts](file://src\vite-env.d.ts) - *Updated environment typing*
 </cite>
+
+## Update Summary
+**Changes Made**   
+- Updated Vite environment variable processing section to reflect removal of hardcoded values in vite.config.ts
+- Updated environment validation mechanism section to reflect consolidation of environment typing into Vite's standard mechanism
+- Added information about the new vite-env.d.ts file that replaces the standalone env.d.ts
+- Removed references to Firebase integration which has been removed
+- Updated code examples to reflect current implementation without hardcoded Supabase URL and publishable key definitions
 
 ## Table of Contents
 1. [Introduction](#introduction)
@@ -25,7 +34,7 @@
 9. [Conclusion](#conclusion)
 
 ## Introduction
-The sleekapp-v100 application implements a robust environment variable management system to support different deployment environments while maintaining security and consistency. This document provides comprehensive guidance on environment variable configuration, validation, and best practices across development, preview, and production environments. The system leverages Vite's environment variable processing capabilities combined with custom validation logic to ensure proper configuration before application execution.
+The sleekapp-v100 application implements a robust environment variable management system to support different deployment environments while maintaining security and consistency. This document provides comprehensive guidance on environment variable configuration, validation, and best practices across development, preview, and production environments. The system leverages Vite's environment variable processing capabilities combined with custom validation logic to ensure proper configuration before application execution. Recent updates have removed Firebase integration and consolidated environment typing into Vite's standard mechanism, simplifying the configuration process.
 
 ## Environment Types and Configuration Needs
 The application supports three primary environment types: development, preview, and production, each with distinct configuration requirements.
@@ -40,7 +49,7 @@ The preview environment is used for staging and testing deployments, typically o
 The production environment (PROD) has the strictest requirements, with mandatory validation of all environment variables at startup. When `import.meta.env.PROD` is true, the application automatically validates environment variables and will fail fast if any required variables are missing or invalid. This ensures that production deployments are properly configured before serving traffic.
 
 **Section sources**
-- [env-validator.ts](file://src/lib/env-validator.ts#L117-L127)
+- [env-validator.ts](file://src\lib\env-validator.ts#L117-L127)
 - [vite.config.ts](file://vite.config.ts#L11)
 
 ## Vite Environment Variable Processing
@@ -55,38 +64,41 @@ Vite only exposes environment variables to the client-side code when they are pr
 - `VITE_BUILD_ID`: A timestamp-based build identifier
 
 ### Server-Side Variable Injection
-The vite.config.ts file uses the `define` configuration option to inject environment variables into the application at build time. This approach allows setting default values when environment variables are not present:
+The vite.config.ts file no longer contains hardcoded Supabase URL and publishable key definitions. Instead, it relies entirely on environment variables provided at build time:
 
 ```typescript
 define: {
-  'import.meta.env.VITE_SUPABASE_URL': JSON.stringify(process.env.VITE_SUPABASE_URL ?? 'https://eqpftggctumujhutomom.supabase.co'),
-  'import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY': JSON.stringify(process.env.VITE_SUPABASE_PUBLISHABLE_KEY ?? 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'),
-  'import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY': JSON.stringify(process.env.VITE_STRIPE_PUBLISHABLE_KEY ?? ''),
   'import.meta.env.VITE_BUILD_ID': JSON.stringify(Date.now().toString()),
 }
 ```
 
-This pattern ensures the application can run with sensible defaults during development while using configured values in production.
+This change simplifies the configuration by removing hardcoded values and ensuring that all environment variables are consistently managed through Vite's standard mechanism. The application now depends on proper environment variable setup rather than fallback values in the configuration file.
 
 **Section sources**
-- [vite.config.ts](file://vite.config.ts#L79-L85)
+- [vite.config.ts](file://vite.config.ts#L79-L81)
 
 ## Environment Validation Mechanism
 The application implements a comprehensive environment validation system through the env-validator.ts module to ensure proper configuration before runtime execution.
 
-### Singleton Validation Pattern
-The EnvironmentValidator class follows the singleton pattern, ensuring only one instance exists throughout the application lifecycle. This prevents redundant validation checks and maintains a consistent state:
+### Consolidated Environment Typing
+The environment typing has been consolidated into Vite's standard mechanism using the vite-env.d.ts file, which replaces the standalone env.d.ts file:
 
 ```typescript
-private static instance: EnvironmentValidator;
-
-static getInstance(): EnvironmentValidator {
-  if (!EnvironmentValidator.instance) {
-    EnvironmentValidator.instance = new EnvironmentValidator();
+declare global {
+  interface ImportMetaEnv {
+    readonly VITE_SUPABASE_URL: string
+    readonly VITE_SUPABASE_PUBLISHABLE_KEY: string
+    readonly VITE_SUPABASE_PROJECT_ID: string
+    readonly VITE_STRIPE_PUBLISHABLE_KEY: string
   }
-  return EnvironmentValidator.instance;
+
+  interface ImportMeta {
+    readonly env: ImportMetaEnv
+  }
 }
 ```
+
+This approach provides type safety for environment variables directly within Vite's ecosystem, eliminating the need for a separate type definition file and ensuring consistency across the application.
 
 ### Validation Process
 The validation process occurs in several stages:
@@ -129,10 +141,12 @@ EnvironmentValidator --> EnvConfig : "returns"
 ```
 
 **Diagram sources**
-- [env-validator.ts](file://src/lib/env-validator.ts#L6-L128)
+- [env-validator.ts](file://src\lib\env-validator.ts#L6-L128)
+- [vite-env.d.ts](file://src\vite-env.d.ts)
 
 **Section sources**
-- [env-validator.ts](file://src/lib/env-validator.ts#L1-L142)
+- [env-validator.ts](file://src\lib\env-validator.ts#L1-L142)
+- [vite-env.d.ts](file://src\vite-env.d.ts)
 
 ## Secure Handling of Sensitive Keys
 The application implements multiple strategies to securely handle sensitive keys, particularly the Supabase SERVICE_ROLE_KEY.
@@ -171,9 +185,9 @@ The application follows security best practices by:
 4. Providing clear error messages with guidance for fixing configuration issues
 
 **Section sources**
-- [stripe-webhook/index.ts](file://supabase/functions/stripe-webhook/index.ts#L17-L18)
-- [setup-database.js](file://scripts/setup-database.js#L15)
-- [ai-quote-generator/index.ts](file://supabase/functions/ai-quote-generator/index.ts#L228)
+- [stripe-webhook/index.ts](file://supabase\functions\stripe-webhook\index.ts#L17-L18)
+- [setup-database.js](file://scripts\setup-database.js#L15)
+- [ai-quote-generator/index.ts](file://supabase\functions\ai-quote-generator/index.ts#L228)
 
 ## Practical Configuration Examples
 This section provides practical examples for configuring the application in different environments.
@@ -192,7 +206,7 @@ Start the development server with:
 npm run dev
 ```
 
-The application will use these values, falling back to defaults if any are missing.
+The application will use these values, with no fallback to hardcoded values in vite.config.ts.
 
 ### Production Deployment on Vercel
 For Vercel deployments, configure environment variables through the Vercel dashboard or CLI:
@@ -283,8 +297,8 @@ private validateUrl(key: string): void {
 This proactive validation prevents runtime errors due to malformed configuration.
 
 **Section sources**
-- [env-validator.ts](file://src/lib/env-validator.ts#L67-L76)
-- [diagnostics.ts](file://src/lib/diagnostics.ts#L103-L119)
+- [env-validator.ts](file://src\lib\env-validator.ts#L67-L76)
+- [diagnostics.ts](file://src\lib\diagnostics.ts#L103-L119)
 
 ## Best Practices for Multi-Platform Management
 This section outlines best practices for managing environment variables across different platforms.
@@ -327,7 +341,7 @@ export const checkEnvironmentVariables = async (): Promise<DiagnosticResult> => 
 **Section sources**
 - [netlify.toml](file://netlify.toml)
 - [vercel.json](file://vercel.json)
-- [diagnostics.ts](file://src/lib/diagnostics.ts#L103-L119)
+- [diagnostics.ts](file://src\lib\diagnostics.ts#L103-L119)
 
 ## Conclusion
 The environment variable management system in sleekapp-v100 provides a robust foundation for secure and reliable application deployment across multiple environments. By leveraging Vite's built-in environment variable processing, implementing comprehensive validation through the EnvironmentValidator class, and following security best practices for handling sensitive keys, the application ensures consistent behavior while minimizing configuration-related errors.
