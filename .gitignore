@@ -19,21 +19,52 @@ dist-ssr
 .DS_Store
 *.suo
 *.ntvs*
-*.njsproj
+*.njsproj*
 *.sln
 *.sw?
-.env
-
-# Node/Vite
-node_modules/
-dist/
 
 # Environment
+.env
 .env*
 
-# IDE
-.vscode/
+# Build artifacts and caches
+.vite/
+.cache/
+dist/
+dist-ssr/
+
+# Test outputs
+test-results.json
+test_log.txt
+build_log.txt
+*.test.log
+
+# Temporary debugging files
+check-*.sh
+check-*.sql
+*_debug.txt
+*_temp.*
+
+# IDE and agent artifacts
+.qoder/
+.idx/
+.agent/
+.cursor/
+
+# Image optimization cache
+.cache/image-optimizer/
+
+# OS-specific
 .DS_Store
+Thumbs.db
+
+# Temporary documentation
+*_TEMP.md
+*_DRAFT.md
+
+# Build diagnostics
+build-error.png
+build-error.log
 
 # Ignore long-named local media gallery assets
 src/assets/Sleek Apparels_Media_Gallery/
