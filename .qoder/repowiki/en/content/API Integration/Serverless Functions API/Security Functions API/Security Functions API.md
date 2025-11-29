@@ -11,7 +11,20 @@
 - [env-validator.ts](file://src/lib/env-validator.ts)
 - [auditLog.ts](file://src/lib/auditLog.ts)
 - [BASE_MIGRATION_SAFE.sql](file://supabase/BASE_MIGRATION_SAFE.sql)
+- [log-security-event/index.ts](file://supabase/functions/log-security-event/index.ts) - *Added in recent commit*
+- [log-ai-cost/index.ts](file://supabase/functions/log-ai-cost/index.ts) - *Added in recent commit*
+- [SecurityMonitoringDashboard.tsx](file://src/components/admin/SecurityMonitoringDashboard.tsx) - *Added in recent commit*
+- [security_events.sql](file://supabase/migrations/20251128220157_remix_migration_from_pg_dump.sql#L1450-L1463) - *Added in recent commit*
+- [ai_cost_tracking.sql](file://supabase/migrations/20251128220157_remix_migration_from_pg_dump.sql#L1049-L1075) - *Added in recent commit*
 </cite>
+
+## Update Summary
+**Changes Made**
+- Added new section "Real-Time Security Monitoring Functions" to document the newly added `log-security-event` and `log-ai-cost` edge functions
+- Added new section "Security Monitoring Dashboard" to document the `SecurityMonitoringDashboard` component and its integration with real-time security monitoring
+- Updated Table of Contents to include new sections
+- Added new Mermaid diagram for real-time security event flow
+- Updated document sources to include all new files related to security monitoring
 
 ## Table of Contents
 1. [Introduction](#introduction)
@@ -20,11 +33,13 @@
 4. [Password Security Functions](#password-security-functions)
 5. [Administrative Functions](#administrative-functions)
 6. [Audit Logging System](#audit-logging-system)
-7. [Integration Patterns](#integration-patterns)
-8. [Security Measures](#security-measures)
-9. [Deployment and Environment Management](#deployment-and-environment-management)
-10. [Monitoring and Alerting](#monitoring-and-alerting)
-11. [Best Practices](#best-practices)
+7. [Real-Time Security Monitoring Functions](#real-time-security-monitoring-functions)
+8. [Security Monitoring Dashboard](#security-monitoring-dashboard)
+9. [Integration Patterns](#integration-patterns)
+10. [Security Measures](#security-measures)
+11. [Deployment and Environment Management](#deployment-and-environment-management)
+12. [Monitoring and Alerting](#monitoring-and-alerting)
+13. [Best Practices](#best-practices)
 
 ## Introduction
 
@@ -48,12 +63,16 @@ VerifyOTP[verify-otp]
 PasswordCheck[password-breach-check]
 AdminCheck[admin-check]
 LogAudit[log-audit-action]
+LogSecurity[log-security-event]
+LogAICost[log-ai-cost]
 end
 subgraph "Database Layer"
 OTPStore[OTP Storage]
 AuditLogs[Audit Logs]
 UserRoles[User Roles]
 Profiles[User Profiles]
+SecurityEvents[security_events]
+AICostTracking[ai_cost_tracking]
 end
 subgraph "External Services"
 Resend[Resend Email Service]
@@ -65,6 +84,8 @@ WebApp --> VerifyOTP
 WebApp --> PasswordCheck
 WebApp --> AdminCheck
 WebApp --> LogAudit
+WebApp --> LogSecurity
+WebApp --> LogAICost
 SendOTP --> OTPStore
 VerifyOTP --> OTPStore
 VerifyOTP --> Profiles
@@ -73,6 +94,9 @@ AdminCheck --> UserRoles
 SendOTP --> Resend
 SendOTP --> Recaptcha
 PasswordCheck --> HIBP
+LogSecurity --> SecurityEvents
+LogAICost --> AICostTracking
+LogAICost --> SecurityEvents
 ```
 
 **Diagram sources**
@@ -81,6 +105,8 @@ PasswordCheck --> HIBP
 - [password-breach-check/index.ts](file://supabase/functions/password-breach-check/index.ts#L1-L142)
 - [admin-check/index.ts](file://supabase/functions/admin-check/index.ts#L1-L74)
 - [log-audit-action/index.ts](file://supabase/functions/log-audit-action/index.ts#L1-L97)
+- [log-security-event/index.ts](file://supabase/functions/log-security-event/index.ts#L1-L61)
+- [log-ai-cost/index.ts](file://supabase/functions/log-ai-cost/index.ts#L1-L96)
 
 **Section sources**
 - [send-otp/index.ts](file://supabase/functions/send-otp/index.ts#L1-L50)
@@ -88,6 +114,8 @@ PasswordCheck --> HIBP
 - [password-breach-check/index.ts](file://supabase/functions/password-breach-check/index.ts#L1-L50)
 - [admin-check/index.ts](file://supabase/functions/admin-check/index.ts#L1-L50)
 - [log-audit-action/index.ts](file://supabase/functions/log-audit-action/index.ts#L1-L50)
+- [log-security-event/index.ts](file://supabase/functions/log-security-event/index.ts#L1-L61)
+- [log-ai-cost/index.ts](file://supabase/functions/log-ai-cost/index.ts#L1-L96)
 
 ## Two-Factor Authentication Functions
 
@@ -464,6 +492,274 @@ ADMIN_AUDIT_LOGS ||--|| USERS : "performed_by"
 - [log-audit-action/index.ts](file://supabase/functions/log-audit-action/index.ts#L22-L97)
 - [auditLog.ts](file://src/lib/auditLog.ts#L28-L40)
 
+## Real-Time Security Monitoring Functions
+
+### log-security-event Function
+
+The `log-security-event` function captures and stores security-related events for real-time monitoring and alerting.
+
+#### Endpoint Details
+- **URL**: `/functions/v1/log-security-event`
+- **Method**: POST
+- **Content-Type**: application/json
+- **Authentication**: Public (with IP tracking)
+
+#### Request Format
+```typescript
+interface SecurityEventRequest {
+  event_type: 'captcha_failure' | 'rate_limit_violation' | 'suspicious_pattern' | 'cost_alert';
+  severity: 'low' | 'medium' | 'high' | 'critical';
+  source: string;
+  details?: Record<string, any>;
+  user_id?: string;
+  session_id?: string;
+}
+```
+
+#### Response Format
+```typescript
+interface SecurityEventResponse {
+  success: boolean;
+  error?: string;
+}
+```
+
+#### Security Features
+
+**Automatic IP and User Agent Capture**:
+- Extracts client IP from x-forwarded-for or x-real-ip headers
+- Captures user agent for forensic analysis
+- Stores session context for pattern detection
+
+**Event Validation**:
+- Strict validation of event types and severity levels
+- JSONB storage for flexible details structure
+- Automatic timestamp generation
+
+**Real-time Integration**:
+- Designed to work with Supabase real-time subscriptions
+- Enables immediate dashboard updates
+- Supports automated alerting based on severity
+
+#### Invocation Example
+
+```typescript
+// Log a rate limit violation
+const { data, error } = await supabase.functions.invoke('log-security-event', {
+  body: {
+    event_type: 'rate_limit_violation',
+    severity: 'medium',
+    source: 'send-otp',
+    details: {
+      phone: '+1234567890',
+      attempts: 4,
+      window: '5 minutes'
+    }
+  }
+});
+
+// Log a suspicious pattern
+const { data, error } = await supabase.functions.invoke('log-security-event', {
+  body: {
+    event_type: 'suspicious_pattern',
+    severity: 'high',
+    source: 'ai-quote-generator',
+    details: {
+      user_id: 'a1b2c3d4-e5f6-7890-g1h2-i3j4k5l6m7n8',
+      request_pattern: 'high_volume_short_duration',
+      request_count: 25,
+      time_window_minutes: 2
+    }
+  }
+});
+```
+
+**Section sources**
+- [log-security-event/index.ts](file://supabase/functions/log-security-event/index.ts#L1-L61)
+- [security_events.sql](file://supabase/migrations/20251128220157_remix_migration_from_pg_dump.sql#L1450-L1463)
+
+### log-ai-cost Function
+
+The `log-ai-cost` function tracks AI service usage and costs, with automatic alerting for cost thresholds.
+
+#### Endpoint Details
+- **URL**: `/functions/v1/log-ai-cost`
+- **Method**: POST
+- **Content-Type**: application/json
+- **Authentication**: Public (with cost calculation)
+
+#### Request Format
+```typescript
+interface AICostRequest {
+  function_name: string;
+  model: 'google/gemini-2.5-flash' | 'google/gemini-2.5-pro' | 'perplexity/sonar-small' | 'perplexity/sonar-large';
+  request_tokens: number;
+  response_tokens: number;
+  session_id?: string;
+  user_id?: string;
+}
+```
+
+#### Response Format
+```typescript
+interface AICostResponse {
+  success: boolean;
+  estimated_cost: number;
+  hourly_cost: number;
+  error?: string;
+}
+```
+
+#### Security Features
+
+**Cost Calculation**:
+- Pre-configured cost models for supported AI services
+- Input and output token cost calculation
+- Real-time cost estimation
+
+**Automated Cost Alerting**:
+- Monitors hourly cost trends
+- Automatically creates security events for threshold breaches
+- Critical alerts for >$5/hour, high alerts for >$1/hour
+
+**Usage Analytics**:
+- Tracks function and model usage patterns
+- Enables cost optimization analysis
+- Supports budget forecasting
+
+#### Cost Monitoring Flow
+
+```mermaid
+sequenceDiagram
+participant Client as AI Service Client
+participant LogAICost as log-ai-cost Function
+participant Database as Supabase Database
+participant SecurityLogger as Security Event System
+Client->>LogAICost : POST /log-ai-cost
+LogAICost->>LogAICost : Calculate cost based on model and tokens
+LogAICost->>Database : Store cost tracking record
+Database-->>LogAICost : Confirmation
+LogAICost->>Database : Query recent costs (last hour)
+Database-->>LogAICost : Cost data
+LogAICost->>LogAICost : Calculate hourly total
+LogAICost->>LogAICost : Check threshold ($1/hour)
+LogAICost->>SecurityLogger : Create cost_alert event if threshold exceeded
+SecurityLogger-->>LogAICost : Event confirmation
+LogAICost-->>Client : Response with cost data
+```
+
+**Diagram sources**
+- [log-ai-cost/index.ts](file://supabase/functions/log-ai-cost/index.ts#L60-L82)
+- [ai_cost_tracking.sql](file://supabase/migrations/20251128220157_remix_migration_from_pg_dump.sql#L1049-L1075)
+
+**Section sources**
+- [log-ai-cost/index.ts](file://supabase/functions/log-ai-cost/index.ts#L1-L96)
+- [ai_cost_tracking.sql](file://supabase/migrations/20251128220157_remix_migration_from_pg_dump.sql#L1049-L1075)
+- [shared/securityLogger.ts](file://supabase/functions/shared/securityLogger.ts#L57-L87)
+
+## Security Monitoring Dashboard
+
+### SecurityMonitoringDashboard Component
+
+The `SecurityMonitoringDashboard` provides real-time visualization of security events and AI cost metrics using Supabase real-time subscriptions.
+
+#### Component Details
+- **Path**: `src/components/admin/SecurityMonitoringDashboard.tsx`
+- **Dependencies**: Supabase client, React, Lucide icons, Sonner toast
+- **Real-time Features**: PostgreSQL change subscriptions for immediate updates
+
+#### Data Sources
+
+The dashboard displays data from three main sources:
+
+1. **Recent Security Events**: Direct query and real-time subscription to `security_events` table
+2. **AI Cost Breakdown**: Query to `ai_hourly_costs` view for hourly cost analysis
+3. **Weekly Security Summary**: Query to `daily_security_summary` view for aggregated event data
+
+#### Key Metrics Displayed
+
+| Metric | Source | Update Mechanism |
+|--------|--------|------------------|
+| Critical Events | security_events | Real-time subscription |
+| High Priority Events | security_events | Real-time subscription |
+| Daily AI Cost | ai_hourly_costs | Polling (5 min interval) |
+| Total Events | security_events | Real-time subscription |
+
+#### Real-time Subscription Implementation
+
+```typescript
+useEffect(() => {
+  fetchSecurityData();
+  
+  // Set up real-time subscription for new security events
+  const channel = supabase
+    .channel('security-monitoring')
+    .on(
+      'postgres_changes',
+      {
+        event: 'INSERT',
+        schema: 'public',
+        table: 'security_events',
+      },
+      (payload) => {
+        const newEvent = payload.new as SecurityEvent;
+        setRecentEvents(prev => [newEvent, ...prev].slice(0, 10));
+        
+        // Show toast notification for critical/high severity events
+        if (newEvent.severity === 'critical' || newEvent.severity === 'high') {
+          toast.error(`Security Alert: ${newEvent.event_type}`, {
+            description: `${newEvent.severity.toUpperCase()} - ${newEvent.source}`,
+          });
+        }
+      }
+    )
+    .subscribe();
+
+  return () => {
+    supabase.removeChannel(channel);
+  };
+}, []);
+```
+
+#### Database Schema
+
+**security_events Table**
+| Column | Type | Description | Constraints |
+|--------|------|-------------|-------------|
+| id | UUID | Primary key | PRIMARY KEY |
+| event_type | TEXT | Type of security event | NOT NULL, CHECK constraint |
+| severity | TEXT | Severity level | NOT NULL, CHECK constraint |
+| source | TEXT | Source function/component | NOT NULL |
+| user_id | UUID | Associated user | NULLABLE |
+| session_id | TEXT | Session identifier | NULLABLE |
+| ip_address | TEXT | Client IP address | NULLABLE |
+| user_agent | TEXT | Client user agent | NULLABLE |
+| details | JSONB | Event-specific details | NULLABLE |
+| created_at | TIMESTAMP | Creation timestamp | DEFAULT now() |
+
+**ai_cost_tracking Table**
+| Column | Type | Description | Constraints |
+|--------|------|-------------|-------------|
+| id | UUID | Primary key | PRIMARY KEY |
+| function_name | TEXT | Calling function | NOT NULL |
+| model | TEXT | AI model used | NOT NULL |
+| request_tokens | INTEGER | Input tokens | NULLABLE |
+| response_tokens | INTEGER | Output tokens | NULLABLE |
+| estimated_cost | NUMERIC | Calculated cost in USD | NULLABLE |
+| session_id | TEXT | Session identifier | NULLABLE |
+| user_id | UUID | Associated user | NULLABLE |
+| created_at | TIMESTAMP | Creation timestamp | DEFAULT now() |
+
+**Views**
+- `ai_hourly_costs`: Aggregates AI costs by hour, function, and model
+- `daily_security_summary`: Aggregates security events by day, type, and severity
+
+**Section sources**
+- [SecurityMonitoringDashboard.tsx](file://src/components/admin/SecurityMonitoringDashboard.tsx#L1-L295)
+- [security_events.sql](file://supabase/migrations/20251128220157_remix_migration_from_pg_dump.sql#L1450-L1463)
+- [ai_cost_tracking.sql](file://supabase/migrations/20251128220157_remix_migration_from_pg_dump.sql#L1049-L1075)
+- [types.ts](file://src/integrations/supabase/types.ts#L2824-L2841)
+
 ## Integration Patterns
 
 ### Firebase Auth Integration
@@ -613,6 +909,7 @@ The security functions implement comprehensive monitoring:
 - Failed authentication attempts
 - Unauthorized access attempts
 - Role elevation events
+- AI service cost threshold breaches
 
 **Performance Metrics**:
 - Function execution times
@@ -627,11 +924,13 @@ The audit logging system enables comprehensive security analysis:
 - Multiple failed verification attempts
 - Unusual geographic patterns
 - Automated attack patterns
+- High-frequency AI service usage
 
 **Compliance Reporting**:
 - User action tracking
 - Administrative changes
 - Data access patterns
+- Cost tracking for AI services
 
 ## Best Practices
 

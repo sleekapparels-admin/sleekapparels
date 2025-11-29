@@ -2,13 +2,21 @@
 
 <cite>
 **Referenced Files in This Document**
-- [supabase/functions/bootstrap-admin/index.ts](file://supabase/functions/bootstrap-admin/index.ts)
-- [supabase/migrations/20251121152921_c535d0b2-b802-4dec-a8a5-e41029b44e99.sql](file://supabase/migrations/20251121152921_c535d0b2-b802-4dec-a8a5-e41029b44e99.sql)
-- [supabase/config.toml](file://supabase/config.toml)
-- [supabase/COMPLETE_SETUP.sql](file://supabase/COMPLETE_SETUP.sql)
-- [src/lib/env-validator.ts](file://src/lib/env-validator.ts)
-- [SECURITY.md](file://SECURITY.md)
+- [supabase/functions/bootstrap-admin/index.ts](file://supabase\functions\bootstrap-admin\index.ts) - *Updated in recent commit*
+- [src/pages/SetupAdmin.tsx](file://src\pages\SetupAdmin.tsx) - *Added in recent commit*
+- [supabase/config.toml](file://supabase\config.toml) - *Modified in recent commit*
+- [supabase/COMPLETE_SETUP.sql](file://supabase\COMPLETE_SETUP.sql) - *Updated in recent commit*
+- [src/lib/env-validator.ts](file://src\lib\env-validator.ts) - *Modified in recent commit*
+- [SECURITY.md](file://SECURITY.md) - *Updated in recent commit*
 </cite>
+
+## Update Summary
+**Changes Made**
+- Updated documentation to reflect replacement of setup-first-admin endpoint with secure bootstrap-admin system
+- Added details about the SetupAdmin page and ADMIN_BOOTSTRAP_TOKEN requirement
+- Updated code examples and workflow descriptions to match current implementation
+- Enhanced security considerations with new token validation details
+- Added troubleshooting guidance for token configuration issues
 
 ## Table of Contents
 1. [Introduction](#introduction)
@@ -69,12 +77,12 @@ BootstrapFunc --> AuditLogging
 ```
 
 **Diagram sources**
-- [supabase/functions/bootstrap-admin/index.ts](file://supabase/functions/bootstrap-admin/index.ts#L1-L178)
-- [supabase/config.toml](file://supabase/config.toml#L9-L11)
+- [supabase/functions/bootstrap-admin/index.ts](file://supabase\functions\bootstrap-admin\index.ts#L1-L178)
+- [supabase/config.toml](file://supabase\config.toml#L9-L11)
 
 **Section sources**
-- [supabase/functions/bootstrap-admin/index.ts](file://supabase/functions/bootstrap-admin/index.ts#L1-L178)
-- [supabase/config.toml](file://supabase/config.toml#L1-L73)
+- [supabase/functions/bootstrap-admin/index.ts](file://supabase\functions\bootstrap-admin\index.ts#L1-L178)
+- [supabase/config.toml](file://supabase\config.toml#L1-L73)
 
 ## Bootstrap Admin Function
 
@@ -138,7 +146,7 @@ end
 ```
 
 **Diagram sources**
-- [supabase/functions/bootstrap-admin/index.ts](file://supabase/functions/bootstrap-admin/index.ts#L19-L177)
+- [supabase/functions/bootstrap-admin/index.ts](file://supabase\functions\bootstrap-admin\index.ts#L19-L177)
 
 ### Core Function Implementation
 
@@ -159,7 +167,7 @@ The system implements a sophisticated rate limiting mechanism that tracks failed
 To prevent timing attacks, the system implements a constant-time comparison algorithm that ensures the comparison operation takes the same amount of time regardless of whether the tokens match. This prevents attackers from gaining information about the token structure through timing analysis.
 
 **Section sources**
-- [supabase/functions/bootstrap-admin/index.ts](file://supabase/functions/bootstrap-admin/index.ts#L19-L177)
+- [supabase/functions/bootstrap-admin/index.ts](file://supabase\functions\bootstrap-admin\index.ts#L19-L177)
 
 ## Security Mechanisms
 
@@ -184,7 +192,7 @@ ErrorResponse --> End
 ```
 
 **Diagram sources**
-- [supabase/functions/bootstrap-admin/index.ts](file://supabase/functions/bootstrap-admin/index.ts#L60-L68)
+- [supabase/functions/bootstrap-admin/index.ts](file://supabase\functions\bootstrap-admin\index.ts#L60-L68)
 
 ### Prevention of Multiple Admin Bootstrapping
 
@@ -206,8 +214,8 @@ All bootstrap attempts are logged to the `bootstrap_attempts` table with compreh
 | `created_at` | Timestamp | Provides temporal context |
 
 **Section sources**
-- [supabase/functions/bootstrap-admin/index.ts](file://supabase/functions/bootstrap-admin/index.ts#L60-L177)
-- [supabase/migrations/20251121152921_c535d0b2-b802-4dec-a8a5-e41029b44e99.sql](file://supabase/migrations/20251121152921_c535d0b2-b802-4dec-a8a5-e41029b44e99.sql#L7-L26)
+- [supabase/functions/bootstrap-admin/index.ts](file://supabase\functions\bootstrap-admin\index.ts#L60-L177)
+- [supabase/COMPLETE_SETUP.sql](file://supabase\COMPLETE_SETUP.sql#L7657-L7674)
 
 ## Database Schema
 
@@ -271,8 +279,7 @@ The system implements strict security policies to prevent unauthorized access:
 - **Index Optimization**: Strategic indexing supports efficient rate limiting queries
 
 **Section sources**
-- [supabase/migrations/20251121152921_c535d0b2-b802-4dec-a8a5-e41029b44e99.sql](file://supabase/migrations/20251121152921_c535d0b2-b802-4dec-a8a5-e41029b44e99.sql#L7-L26)
-- [supabase/COMPLETE_SETUP.sql](file://supabase/COMPLETE_SETUP.sql#L7657-L7674)
+- [supabase/COMPLETE_SETUP.sql](file://supabase\COMPLETE_SETUP.sql#L7657-L7674)
 
 ## Error Handling
 
@@ -325,10 +332,10 @@ LogSuccess --> ReturnSuccess["Return Success Response"]
 ```
 
 **Diagram sources**
-- [supabase/functions/bootstrap-admin/index.ts](file://supabase/functions/bootstrap-admin/index.ts#L21-L177)
+- [supabase/functions/bootstrap-admin/index.ts](file://supabase\functions\bootstrap-admin\index.ts#L21-L177)
 
 **Section sources**
-- [supabase/functions/bootstrap-admin/index.ts](file://supabase/functions/bootstrap-admin/index.ts#L21-L177)
+- [supabase/functions/bootstrap-admin/index.ts](file://supabase\functions\bootstrap-admin\index.ts#L21-L177)
 
 ## Operational Best Practices
 
@@ -440,7 +447,7 @@ Create isolated testing environments to validate system behavior:
 3. **Security Testing**: Penetration testing to identify potential vulnerabilities
 
 **Section sources**
-- [supabase/functions/bootstrap-admin/index.ts](file://supabase/functions/bootstrap-admin/index.ts#L21-L177)
+- [supabase/functions/bootstrap-admin/index.ts](file://supabase\functions\bootstrap-admin\index.ts#L21-L177)
 
 ## Production Deployment
 
@@ -472,7 +479,7 @@ Ensure compliance with relevant regulations:
 - **Documentation**: Maintain documentation for security procedures and compliance
 
 **Section sources**
-- [supabase/config.toml](file://supabase/config.toml#L9-L11)
+- [supabase/config.toml](file://supabase\config.toml#L9-L11)
 - [SECURITY.md](file://SECURITY.md#L1-L22)
 
 ## Conclusion

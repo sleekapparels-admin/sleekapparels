@@ -8,7 +8,21 @@
 - [src/lib/supabaseHelpers.ts](file://src/lib/supabaseHelpers.ts)
 - [src/integrations/supabase/client.ts](file://src/integrations/supabase/client.ts)
 - [src/types/README.md](file://src/types/README.md)
+- [env.d.ts](file://env.d.ts) - *Added for environment variable type safety*
+- [supabase/functions/deno.d.ts](file://supabase/functions/deno.d.ts) - *Added for Deno runtime type definitions*
+- [tsconfig.json](file://tsconfig.json) - *Updated with strict mode enabled*
+- [supabase/functions/tsconfig.json](file://supabase/functions/tsconfig.json) - *Updated for Deno function configuration*
+- [src/lib/env-validator.ts](file://src/lib/env-validator.ts) - *Environment validation implementation*
 </cite>
+
+## Update Summary
+**Changes Made**
+- Added new section on Environment Variable Type Safety with `env.d.ts`
+- Added new section on Deno Runtime Type Safety with `deno.d.ts`
+- Updated Introduction to reflect strict TypeScript configuration
+- Enhanced Best Practices with strict mode recommendations
+- Added configuration details for `tsconfig.json` updates
+- Updated document sources to include new and modified files
 
 ## Table of Contents
 1. [Introduction](#introduction)
@@ -17,14 +31,24 @@
 4. [Utility Types for Type Safety](#utility-types-for-type-safety)
 5. [Relationship Between Database Constraints and TypeScript Types](#relationship-between-database-constraints-and-typescript-types)
 6. [Practical Usage Examples](#practical-usage-examples)
-7. [Best Practices](#best-practices)
-8. [Conclusion](#conclusion)
+7. [Environment Variable Type Safety](#environment-variable-type-safety)
+8. [Deno Runtime Type Safety](#deno-runtime-type-safety)
+9. [Best Practices](#best-practices)
+10. [Conclusion](#conclusion)
 
 ## Introduction
 
 The sleekapp-v100 database employs a comprehensive system of enumerated types and utility types to ensure data integrity and provide type-safe operations across the application stack. This documentation covers the PostgreSQL ENUM types defined in the database schema and their corresponding TypeScript type definitions, along with utility types that enhance developer experience and prevent runtime errors.
 
 The system leverages Supabase's type generation capabilities while maintaining explicit TypeScript interfaces to provide robust type safety for database operations. This approach ensures that business logic constraints are enforced both at the database level and in the frontend application.
+
+Recent updates have significantly enhanced the type safety of the system by enabling strict mode in `tsconfig.json` and introducing dedicated type definition files for environment variables and Deno runtime functions. These changes provide compile-time validation for environment configuration and serverless function execution contexts.
+
+**Section sources**
+- [tsconfig.json](file://tsconfig.json) - *Updated with strict mode enabled*
+- [tsconfig.app.json](file://tsconfig.app.json) - *Application configuration*
+- [tsconfig.node.json](file://tsconfig.node.json) - *Node configuration*
+- [tsconfig.test.json](file://tsconfig.test.json) - *Test configuration*
 
 ## Database Enum Types
 
@@ -404,20 +428,159 @@ updateOrderStatus({
 - [src/lib/supabaseHelpers.ts](file://src/lib/supabaseHelpers.ts#L141-L148)
 - [src/hooks/queries/useOrders.ts](file://src/hooks/queries/useOrders.ts#L110-L151)
 
+## Environment Variable Type Safety
+
+The introduction of `env.d.ts` provides comprehensive type safety for environment variables, ensuring that all required configuration is properly defined and validated at compile time.
+
+### env.d.ts Implementation
+
+The `env.d.ts` file defines the expected environment variables with proper typing:
+
+```typescript
+/// <reference types="vite/client" />
+
+interface ImportMetaEnv {
+  readonly VITE_SUPABASE_URL: string
+  readonly VITE_SUPABASE_PUBLISHABLE_KEY: string
+  readonly VITE_SUPABASE_PROJECT_ID: string
+  readonly VITE_STRIPE_PUBLISHABLE_KEY: string
+}
+
+interface ImportMeta {
+  readonly env: ImportMetaEnv
+}
+```
+
+This declaration file enables TypeScript to validate environment variable access throughout the application, preventing runtime errors from misspelled or undefined variables.
+
+### Environment Validation
+
+The system includes a robust environment validation mechanism that checks required variables at startup:
+
+```typescript
+class EnvironmentValidator {
+  private errors: string[] = [];
+
+  validate(): void {
+    this.validateRequired('VITE_SUPABASE_URL');
+    this.validateUrl('VITE_SUPABASE_URL');
+    this.validateSupabaseKey('VITE_SUPABASE_PUBLISHABLE_KEY');
+    
+    if (this.errors.length > 0) {
+      throw new Error(`Environment validation failed:\n${this.errors.join('\n')}`);
+    }
+  }
+
+  private validateRequired(key: string): void {
+    const value = import.meta.env[key];
+    if (!value || value.trim() === '') {
+      this.errors.push(`❌ Missing required environment variable: ${key}`);
+    }
+  }
+}
+```
+
+This validation ensures that critical configuration is present and correctly formatted before the application starts.
+
+**Section sources**
+- [env.d.ts](file://env.d.ts) - *Environment variable type definitions*
+- [src/lib/env-validator.ts](file://src/lib/env-validator.ts) - *Validation implementation*
+- [src/vite-env.d.ts](file://src/vite-env.d.ts) - *Alternative environment typing*
+
+## Deno Runtime Type Safety
+
+The `supabase/functions/deno.d.ts` file provides type safety for Supabase Edge Functions running on the Deno runtime, ensuring proper type checking for serverless functions.
+
+### deno.d.ts Implementation
+
+The type declaration file defines the Deno-specific global objects and module interfaces:
+
+```typescript
+// Deno global type declarations for Supabase Edge Functions
+declare namespace _Deno {
+  export const env: {
+    get(key: string): string | undefined;
+    toObject(): Record<string, string>;
+  };
+
+  export interface ConnInfo {
+    readonly remoteAddr: {
+      transport: "tcp" | "udp";
+      hostname: string;
+      port: number;
+    };
+  }
+}
+
+// Deno standard library types
+declare module "https://deno.land/std@*/http/server.ts" {
+  export function serve(
+    handler: (request: Request) => Response | Promise<Response>,
+    options?: {
+      port?: number;
+      hostname?: string;
+      signal?: AbortSignal;
+      onError?: (error: unknown) => Response | Promise<Response>;
+      onListen?: (params: { hostname: string; port: number }) => void;
+    }
+  ): void;
+}
+
+// Simplified Supabase types
+declare module "https://esm.sh/@supabase/supabase-js@*";
+```
+
+### Configuration in tsconfig.json
+
+The Deno function configuration is specified in the dedicated tsconfig:
+
+```json
+{
+  "compilerOptions": {
+    "target": "ES2021",
+    "lib": ["ES2021", "DOM"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "strict": true,
+    "skipLibCheck": true,
+    "noEmit": true,
+    "allowJs": true,
+    "forceConsistentCasingInFileNames": true,
+    "types": ["@types/node"],
+    "paths": {
+      "https://deno.land/*": ["./deno.d.ts"],
+      "https://esm.sh/*": ["../node_modules/@supabase/supabase-js/dist/module/index.d.ts"]
+    }
+  },
+  "include": ["**/*.ts"],
+  "exclude": ["node_modules"]
+}
+```
+
+This configuration enables proper type checking for Deno runtime functions while maintaining compatibility with the broader TypeScript ecosystem.
+
+**Section sources**
+- [supabase/functions/deno.d.ts](file://supabase/functions/deno.d.ts) - *Deno runtime type definitions*
+- [supabase/functions/tsconfig.json](file://supabase/functions/tsconfig.json) - *Deno function configuration*
+- [supabase/functions/index.ts](file://supabase/functions/index.ts) - *Example function implementation*
+
 ## Best Practices
 
 ### Type Safety Guidelines
 
 1. **Always Use Utility Types**: Prefer `InsertData<T>` and `UpdateData<T>` over manual type definitions
 2. **Leverage Helper Functions**: Use the provided helper functions for common operations
-3. **Enable Strict Mode**: Configure TypeScript with strict type checking enabled
+3. **Enable Strict Mode**: Configure TypeScript with strict type checking enabled as in `tsconfig.json`
 4. **Validate at Multiple Layers**: Combine database constraints with TypeScript validation
+5. **Use Environment Validation**: Always validate environment variables before use
+6. **Maintain Type Definitions**: Keep `env.d.ts` and `deno.d.ts` updated with current requirements
 
 ### Performance Considerations
 
 - **Selective Field Updates**: Use `UpdateData<T>` to minimize unnecessary field updates
 - **Efficient Queries**: Leverage relationship interfaces to reduce query complexity
 - **Index Optimization**: Ensure database indexes align with common query patterns
+- **Tree Shaking**: Configure bundler to eliminate unused type definitions
 
 ### Error Handling Strategies
 
@@ -459,6 +622,8 @@ describe('Order Status Updates', () => {
 
 **Section sources**
 - [src/types/README.md](file://src/types/README.md#L192-L239)
+- [tsconfig.json](file://tsconfig.json) - *Strict mode configuration*
+- [env.d.ts](file://env.d.ts) - *Environment typing best practices*
 
 ## Conclusion
 
@@ -466,6 +631,8 @@ The sleekapp-v100 database employs a sophisticated system of enumerated types an
 
 The utility types (`InsertData<T>` and `UpdateData<T>`) offer powerful abstractions that simplify database operations while maintaining strict type safety. The relationship interfaces enable efficient data modeling with nested associations, reducing query complexity and improving application performance.
 
-This dual-layer approach—combining database constraints with TypeScript type definitions—creates a robust system that prevents data corruption while providing excellent developer experience. The extensive use of helper functions further enhances productivity by providing type-safe, pre-built solutions for common database operations.
+Recent enhancements have significantly strengthened the type safety of the system through the introduction of `env.d.ts` for environment variable typing, `deno.d.ts` for Deno runtime functions, and the enabling of strict mode in `tsconfig.json`. These additions provide compile-time validation for configuration and serverless function execution, preventing common deployment issues.
+
+This dual-layer approach—combining database constraints with TypeScript type definitions—creates a robust system that prevents data corruption while providing excellent developer experience. The extensive use of helper functions and validation utilities further enhances productivity by providing type-safe, pre-built solutions for common database operations.
 
 The system's design demonstrates best practices in modern web application development, where type safety and data integrity are prioritized alongside developer convenience and application performance. This approach serves as a model for building scalable, maintainable applications that can grow with evolving business requirements while maintaining data consistency and reliability.

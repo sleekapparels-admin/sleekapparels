@@ -2,12 +2,22 @@
 
 <cite>
 **Referenced Files in This Document**   
-- [submit-blog-comment/index.ts](file://supabase/functions/submit-blog-comment/index.ts)
-- [database.ts](file://src/types/database.ts)
-- [BlogPostCard.tsx](file://src/components/blog/BlogPostCard.tsx)
-- [BlogPost.tsx](file://src/pages/BlogPost.tsx)
-- [FIXED_SETUP_PART1.sql](file://supabase/FIXED_SETUP_PART1.sql)
+- [submit-blog-comment/index.ts](file://supabase\functions\submit-blog-comment\index.ts) - *Updated with enhanced error handling and logging*
+- [BlogErrorBoundary.tsx](file://src\components\blog\BlogErrorBoundary.tsx) - *Integrated for frontend error handling*
+- [blogDebugger.ts](file://src\lib\blogDebugger.ts) - *Added diagnostic utility for blog data*
+- [check_blog_posts.sql](file://supabase\check_blog_posts.sql) - *SQL script for blog data validation*
+- [BlogPostCard.tsx](file://src\components\blog\BlogPostCard.tsx)
+- [database.ts](file://src\types\database.ts)
+- [FIXED_SETUP_PART1.sql](file://supabase\FIXED_SETUP_PART1.sql)
 </cite>
+
+## Update Summary
+**Changes Made**   
+- Enhanced error handling with detailed logging using emoji indicators
+- Integrated BlogErrorBoundary component for robust frontend error management
+- Added diagnostic tools including blogDebugger.ts utility for debugging blog data issues
+- Included SQL scripts for database inspection and validation
+- Updated documentation to reflect comprehensive logging practices and diagnostic workflows
 
 ## Table of Contents
 1. [Introduction](#introduction)
@@ -22,13 +32,14 @@
 10. [Moderation Workflow](#moderation-workflow)
 11. [Security Practices](#security-practices)
 12. [Request and Response Examples](#request-and-response-examples)
+13. [Diagnostic Tools](#diagnostic-tools)
 
 ## Introduction
 
 The blog comment submission handler is a serverless function in the sleekapp-v100 application that securely processes user comments on blog posts. This webhook endpoint accepts HTTP POST requests containing comment data, validates and sanitizes inputs, verifies reCAPTCHA tokens to prevent spam, and stores comments in the database with an initial approval status of false, requiring administrative review before publication. The handler supports both authenticated users and anonymous submitters, providing a flexible commenting system while maintaining security and data integrity.
 
 **Section sources**
-- [submit-blog-comment/index.ts](file://supabase/functions/submit-blog-comment/index.ts#L1-L128)
+- [submit-blog-comment/index.ts](file://supabase\functions\submit-blog-comment\index.ts#L1-L128)
 
 ## Function Overview
 
@@ -67,10 +78,10 @@ R --> |Yes| T[Return Success Response]
 ```
 
 **Diagram sources**
-- [submit-blog-comment/index.ts](file://supabase/functions/submit-blog-comment/index.ts#L11-L128)
+- [submit-blog-comment/index.ts](file://supabase\functions\submit-blog-comment\index.ts#L11-L128)
 
 **Section sources**
-- [submit-blog-comment/index.ts](file://supabase/functions/submit-blog-comment/index.ts#L1-L128)
+- [submit-blog-comment/index.ts](file://supabase\functions\submit-blog-comment\index.ts#L1-L128)
 
 ## Input Validation and Sanitization
 
@@ -102,10 +113,10 @@ F --> |Yes| H[Sanitized Data]
 ```
 
 **Diagram sources**
-- [submit-blog-comment/index.ts](file://supabase/functions/submit-blog-comment/index.ts#L54-L66)
+- [submit-blog-comment/index.ts](file://supabase\functions\submit-blog-comment\index.ts#L54-L66)
 
 **Section sources**
-- [submit-blog-comment/index.ts](file://supabase/functions/submit-blog-comment/index.ts#L19-L66)
+- [submit-blog-comment/index.ts](file://supabase\functions\submit-blog-comment\index.ts#L19-L66)
 
 ## reCAPTCHA Integration
 
@@ -132,10 +143,10 @@ Handler->>Client : 200 OK
 ```
 
 **Diagram sources**
-- [submit-blog-comment/index.ts](file://supabase/functions/submit-blog-comment/index.ts#L35-L52)
+- [submit-blog-comment/index.ts](file://supabase\functions\submit-blog-comment\index.ts#L35-L52)
 
 **Section sources**
-- [submit-blog-comment/index.ts](file://supabase/functions/submit-blog-comment/index.ts#L27-L52)
+- [submit-blog-comment/index.ts](file://supabase\functions\submit-blog-comment\index.ts#L27-L52)
 
 ## Authentication Support
 
@@ -166,10 +177,10 @@ F --> G
 ```
 
 **Diagram sources**
-- [submit-blog-comment/index.ts](file://supabase/functions/submit-blog-comment/index.ts#L73-L88)
+- [submit-blog-comment/index.ts](file://supabase\functions\submit-blog-comment\index.ts#L73-L88)
 
 **Section sources**
-- [submit-blog-comment/index.ts](file://supabase/functions/submit-blog-comment/index.ts#L73-L88)
+- [submit-blog-comment/index.ts](file://supabase\functions\submit-blog-comment\index.ts#L73-L88)
 
 ## Database Interaction
 
@@ -222,14 +233,14 @@ blog_comments }o--|| profiles : "submitted by"
 ```
 
 **Diagram sources**
-- [submit-blog-comment/index.ts](file://supabase/functions/submit-blog-comment/index.ts#L91-L103)
-- [FIXED_SETUP_PART1.sql](file://supabase/FIXED_SETUP_PART1.sql#L173-L182)
-- [database.ts](file://src/types/database.ts#L104-L113)
+- [submit-blog-comment/index.ts](file://supabase\functions\submit-blog-comment\index.ts#L91-L103)
+- [FIXED_SETUP_PART1.sql](file://supabase\FIXED_SETUP_PART1.sql#L173-L182)
+- [database.ts](file://src\types\database.ts#L104-L113)
 
 **Section sources**
-- [submit-blog-comment/index.ts](file://supabase/functions/submit-blog-comment/index.ts#L68-L103)
-- [FIXED_SETUP_PART1.sql](file://supabase/FIXED_SETUP_PART1.sql#L173-L182)
-- [database.ts](file://src/types/database.ts#L104-L113)
+- [submit-blog-comment/index.ts](file://supabase\functions\submit-blog-comment\index.ts#L68-L103)
+- [FIXED_SETUP_PART1.sql](file://supabase\FIXED_SETUP_PART1.sql#L173-L182)
+- [database.ts](file://src\types\database.ts#L104-L113)
 
 ## Response Format
 
@@ -251,11 +262,11 @@ Error responses include appropriate HTTP status codes and descriptive messages:
 The response includes CORS headers to enable cross-origin requests from the frontend application, allowing the blog commenting system to work seamlessly across different domains.
 
 **Section sources**
-- [submit-blog-comment/index.ts](file://supabase/functions/submit-blog-comment/index.ts#L112-L119)
+- [submit-blog-comment/index.ts](file://supabase\functions\submit-blog-comment\index.ts#L112-L119)
 
 ## Error Handling
 
-The handler implements comprehensive error handling to manage various failure scenarios gracefully. Errors are caught and logged appropriately, with user-friendly messages returned to the client.
+The handler implements comprehensive error handling with detailed logging using emoji indicators to enhance debugging visibility. Errors are caught and logged appropriately, with user-friendly messages returned to the client.
 
 The primary error conditions handled:
 - Missing required fields (400 Bad Request)
@@ -265,7 +276,12 @@ The primary error conditions handled:
 - Database insertion errors (500 Internal Server Error)
 - Unexpected exceptions (500 Internal Server Error)
 
-All errors are logged to the server console for monitoring and debugging purposes, while ensuring that sensitive information is not exposed in error responses to clients.
+All errors are logged to the server console with emoji indicators for quick identification:
+- 🔍 for input validation checks
+- 🛡️ for security-related operations
+- 💾 for database operations
+- ❌ for error conditions
+- ✅ for successful operations
 
 ```mermaid
 flowchart TD
@@ -281,14 +297,16 @@ F --> G
 ```
 
 **Diagram sources**
-- [submit-blog-comment/index.ts](file://supabase/functions/submit-blog-comment/index.ts#L121-L127)
+- [submit-blog-comment/index.ts](file://supabase\functions\submit-blog-comment\index.ts#L121-L127)
 
 **Section sources**
-- [submit-blog-comment/index.ts](file://supabase/functions/submit-blog-comment/index.ts#L20-L25, L28-L32, L60-L65, L104-L110, L121-L127)
+- [submit-blog-comment/index.ts](file://supabase\functions\submit-blog-comment\index.ts#L20-L25, L28-L32, L60-L65, L104-L110, L121-L127)
 
 ## Frontend Integration
 
 The blog comment submission handler is integrated with the frontend BlogPostCard component, which provides the user interface for submitting comments. The integration follows a standard pattern of collecting user input, generating a reCAPTCHA token, and submitting the data to the webhook endpoint.
+
+The integration now includes the BlogErrorBoundary component to handle any rendering or data fetching errors gracefully. This component provides a fallback UI when errors occur, logs error details to the console, and offers users options to retry, reload, or navigate home.
 
 The frontend implementation:
 1. Renders a comment submission form within the BlogPostCard component
@@ -296,12 +314,12 @@ The frontend implementation:
 3. Generates a reCAPTCHA token when the form is submitted
 4. Sends a POST request to the submit-blog-comment function
 5. Handles the response and provides user feedback
-
-The integration uses the Supabase client library to manage the HTTP request and response cycle, ensuring proper error handling and user experience.
+6. Wraps critical components with BlogErrorBoundary for error resilience
 
 **Section sources**
-- [BlogPostCard.tsx](file://src/components/blog/BlogPostCard.tsx#L1-L72)
-- [BlogPost.tsx](file://src/pages/BlogPost.tsx#L1-L252)
+- [BlogPostCard.tsx](file://src\components\blog\BlogPostCard.tsx#L1-L72)
+- [BlogPost.tsx](file://src\pages\BlogPost.tsx#L1-L252)
+- [BlogErrorBoundary.tsx](file://src\components\blog\BlogErrorBoundary.tsx#L1-L175)
 
 ## Moderation Workflow
 
@@ -317,8 +335,8 @@ The moderation process:
 The admin interface for blog management (AdminBlogEditor) provides tools for reviewing and managing comments, although the specific comment moderation interface is not detailed in the available code.
 
 **Section sources**
-- [submit-blog-comment/index.ts](file://supabase/functions/submit-blog-comment/index.ts#L99-L99)
-- [AdminBlogEditor.tsx](file://src/pages/AdminBlogEditor.tsx#L1-L325)
+- [submit-blog-comment/index.ts](file://supabase\functions\submit-blog-comment\index.ts#L99-L99)
+- [AdminBlogEditor.tsx](file://src\pages\AdminBlogEditor.tsx#L1-L325)
 
 ## Security Practices
 
@@ -341,7 +359,7 @@ The handler implements multiple security practices to protect against common web
 Rate limiting considerations are not explicitly implemented in the handler but could be added at the API gateway level or through Supabase's built-in rate limiting features.
 
 **Section sources**
-- [submit-blog-comment/index.ts](file://supabase/functions/submit-blog-comment/index.ts#L4-L7, L54-L58, L60-L66)
+- [submit-blog-comment/index.ts](file://supabase\functions\submit-blog-comment\index.ts#L4-L7, L54-L58, L60-L66)
 
 ## Request and Response Examples
 
@@ -384,4 +402,49 @@ Rate limiting considerations are not explicitly implemented in the handler but c
 These examples demonstrate the expected format for interacting with the blog comment submission handler, enabling frontend developers to implement the commenting functionality correctly.
 
 **Section sources**
-- [submit-blog-comment/index.ts](file://supabase/functions/submit-blog-comment/index.ts#L17-L119)
+- [submit-blog-comment/index.ts](file://supabase\functions\submit-blog-comment\index.ts#L17-L119)
+
+## Diagnostic Tools
+
+Comprehensive diagnostic tools have been added to support debugging and monitoring of the blog comment system.
+
+### blogDebugger.ts Utility
+
+The `blogDebugger.ts` utility provides comprehensive diagnostics for blog data fetching issues. It includes functions to:
+- Test Supabase configuration and connection status
+- Verify database connectivity
+- Check read/write permissions
+- Validate blog post data integrity
+- Run full diagnostic reports with emoji indicators
+
+Key functions:
+- `debugBlogDataFetching()`: Comprehensive connection and data validation
+- `verifyBlogPost(idOrSlug)`: Verify specific blog post existence
+- `runBlogDiagnostics()`: Execute full diagnostic suite
+
+```mermaid
+flowchart TD
+A[Run Diagnostics] --> B[Test Configuration]
+B --> C[Test Database Connection]
+C --> D[Fetch All Posts]
+D --> E[Test Published Posts Query]
+E --> F[Test Write Permissions]
+F --> G[Generate Report]
+```
+
+**Section sources**
+- [blogDebugger.ts](file://src\lib\blogDebugger.ts#L1-L246)
+
+### SQL Diagnostic Scripts
+
+The `check_blog_posts.sql` script provides database-level inspection capabilities:
+- Verify table existence and structure
+- Count total and published posts
+- Check data integrity issues
+- Validate RLS policies
+- Test sample queries used by the frontend
+
+The script can be executed directly in the database to diagnose data-related issues.
+
+**Section sources**
+- [check_blog_posts.sql](file://supabase\check_blog_posts.sql#L1-L104)
